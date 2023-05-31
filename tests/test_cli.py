@@ -1,10 +1,9 @@
 from io import StringIO
 from pathlib import Path
 
-from udc import UnCli, UnUri
+from un import UnCli, UnUri
 
-from .conftest import pytestmark  # NOQA F401
-from .conftest import BENCH_TENANT, BENCH_URI, PKG_URI, pytest
+from .conftest import pytest, pytestmark  # NOQA F401
 
 
 @pytest.fixture
@@ -44,15 +43,5 @@ async def test_un_cli_parser(cli: UnCli, buf: StringIO):
     assert parser
     assert cli.parse(argv)
     await cli.run(argv, buf)
-    assert "udc" in buf.getvalue()
+    assert "un-yaml" in buf.getvalue()
 
-
-def test_un_cli_get_quilt(cli: UnCli):
-    uri = UnUri(PKG_URI)
-    assert cli.get_resource(uri)
-
-
-@pytest.mark.skipif(not BENCH_TENANT, reason="Benchling environment variables not set")
-def test_un_cli_get_benchling(cli: UnCli):
-    uri = UnUri(BENCH_URI)
-    assert cli.get_resource(uri)

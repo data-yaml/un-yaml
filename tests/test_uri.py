@@ -1,11 +1,10 @@
-from udc import UnUri
+from un import UnUri
 
-from .conftest import pytestmark  # NOQA F401
-from .conftest import PKG_URI
+from .conftest import pytest, pytestmark  # NOQA F401
 
 
 async def test_uri():
-    uri = UnUri(PKG_URI)
+    uri = UnUri("quilt+s3://quilt-example")
     assert uri
     assert "quilt" == uri.tool()
     assert "s3" == uri.get("_protocol")

@@ -1,6 +1,6 @@
-from udc import UnCli, UnYaml
+from un import UnCli, UnYaml
 
-from .conftest import pytest
+from .conftest import pytest, pytestmark  # NOQA F401
 
 
 @pytest.fixture
@@ -9,7 +9,7 @@ def un():
 
 
 def test_un_load():
-    yaml_data = UnYaml.load_yaml(UnCli.CLI_YAML, "udc", "un")
+    yaml_data = UnYaml.load_yaml(UnCli.CLI_YAML, "un-yaml", "un")
     assert yaml_data
     assert UnYaml.KEY in yaml_data
     un = UnYaml(yaml_data)
@@ -23,7 +23,7 @@ def test_un_init(un: UnYaml):
 
 def test_un_info(un: UnYaml):
     assert "UnCli" == un.info("app")
-    assert "udc" == un.info("doc")
+    assert "un-yaml" == un.info("doc")
 
 
 def test_un_expand(un: UnYaml):
