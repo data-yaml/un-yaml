@@ -39,12 +39,13 @@ class UnCli(UnYaml):
         self.doc = self.get_handler("doc")()
 
     def parse_version(self, parser: ArgumentParser) -> None:
-        __version__ = version("un_yaml")
+        doc_name = self.info("doc")
+        __version__ = version(doc_name)
         parser.add_argument(
             "-v",
             "--version",
             action="store_const",
-            const=f"{self.info('doc')} {__version__}",
+            const=f"{doc_name} {__version__}",
             help="Show version and exit.",
         )
 
