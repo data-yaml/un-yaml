@@ -1,7 +1,7 @@
 from io import StringIO
 from pathlib import Path
 
-from un import UnCli, UnUri
+from un_yaml import UnCli, UnUri
 
 from .conftest import pytest, pytestmark  # NOQA F401
 
@@ -43,5 +43,5 @@ async def test_un_cli_parser(cli: UnCli, buf: StringIO):
     assert parser
     assert cli.parse(argv)
     await cli.run(argv, buf)
-    assert "un-yaml" in buf.getvalue()
+    assert "un_yaml" in buf.getvalue()
 

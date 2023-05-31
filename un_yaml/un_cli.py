@@ -6,7 +6,7 @@ from pathlib import Path  # NOQA F401
 from sys import stdout
 from typing import Any
 
-__version__ = version("un-yaml")
+__version__ = version("un_yaml")
 
 from .un_uri import UnUri
 from .un_yaml import UnYaml
@@ -31,7 +31,7 @@ class UnCli(UnYaml):
         return kwargs
 
     def __init__(self, file=CLI_YAML) -> None:
-        yaml_data = UnYaml.load_yaml(file, "un-yaml", "un")
+        yaml_data = UnYaml.load_yaml(file, "un_yaml", "un")
         super().__init__(yaml_data)
         if UnCli.CMD not in self.cfg:
             raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.cfg}")
@@ -39,7 +39,7 @@ class UnCli(UnYaml):
         self.doc = self.get_handler("doc")()
 
     def parse_version(self, parser: ArgumentParser) -> None:
-        __version__ = version("un-yaml")
+        __version__ = version("un_yaml")
         parser.add_argument(
             "-v",
             "--version",

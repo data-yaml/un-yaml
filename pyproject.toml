@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "un-yaml"
+name = "un_yaml"
 version = "0.1.0"
 description = "Universal YAML: replace repetitive code with your own Domain-Specific un-Language (DSuL)"
 authors = ["Ernest Prabhakar <ernest@quiltdata.io>"]

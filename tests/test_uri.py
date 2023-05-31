@@ -1,4 +1,4 @@
-from un import UnUri
+from un_yaml import UnUri
 
 from .conftest import pytest, pytestmark  # NOQA F401
 
