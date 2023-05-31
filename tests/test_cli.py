@@ -44,4 +44,3 @@ async def test_un_cli_parser(cli: UnCli, buf: StringIO):
     assert cli.parse(argv)
     await cli.run(argv, buf)
     assert "un_yaml" in buf.getvalue()
-

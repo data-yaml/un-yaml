@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "un_yaml"
-version = "0.1.0"
+version = "0.1.1"
 description = "Universal YAML: replace repetitive code with your own Domain-Specific un-Language (DSuL)"
 authors = ["Ernest Prabhakar <ernest@quiltdata.io>"]
 readme = "README.md"
@@ -20,9 +20,6 @@ pytest-asyncio = "^0.21.0"
 pytest-trio = "^0.8.0"
 pytest-codeblocks = "^0.16.1"
 ipykernel = "^6.23.1"
-
-[tool.poetry.scripts]
-un-yaml = "un-yaml.main:main"
 
 [build-system]
 requires = ["poetry-core"]
