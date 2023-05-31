@@ -2,18 +2,12 @@ _yaml:
   _version: 0.1.0
   app: UnCli
   app_version: 0.2.0
-  doc: udc
-  doc_version: 0.2.0
+  doc: un_yaml
+  doc_version: 0.1.0
   handlers:
     doc:
-      module: udc.wrapper
+      module: un_yaml.wrapper
       method: Wrapper
-    quilt:
-      module: udc.quilt.resource
-      method: QuiltResource
-    benchling:
-      module: udc.benchling.resource
-      method: BenchlingResource
     uri:
       module: self
       method: get_resource

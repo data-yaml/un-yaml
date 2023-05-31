@@ -9,7 +9,7 @@ def un():
 
 
 def test_un_load():
-    yaml_data = UnYaml.load_yaml(UnCli.CLI_YAML, "un_yaml", "un")
+    yaml_data = UnYaml.load_yaml(UnCli.CLI_YAML, "tests")
     assert yaml_data
     assert UnYaml.KEY in yaml_data
     un = UnYaml(yaml_data)
@@ -56,7 +56,7 @@ def test_un_re_expand(un: UnYaml):
 
 
 def test_un_get_handler(un: UnYaml):
-    for key in ["quilt", "benchling", "doc"]:
+    for key in ["doc"]:
         assert un.get_handler(key)
     with pytest.raises(ValueError):
         un.get_handler("unknown")
