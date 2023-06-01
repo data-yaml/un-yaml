@@ -1,6 +1,6 @@
 # CHANGELOG.md
 
-## 0.1.3 (2023-06-01)
+## 0.2.0 (2023-06-01)
 
 - enable writing yaml files
 - add typecheck via mypy
