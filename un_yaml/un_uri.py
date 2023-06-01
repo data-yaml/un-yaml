@@ -11,6 +11,7 @@ class UnUri:
     SEP = "+"
     K_HOST = "_hostname"
     K_PROT = "_protocol"
+    K_UPTH = "_uri_paths"
     K_QRY = "_query"
     K_TOOL = "_tool"
     K_URI = "_uri"
@@ -35,6 +36,7 @@ class UnUri:
         self.attrs = self.parse_query(self.uri.fragment)
         self.parse_scheme(self.uri.scheme)
         self.attrs[UnUri.K_HOST] = self.uri.hostname or "localhost"
+        self.attrs[UnUri.K_UPTH] = self.uri.path.strip('/').split("/")
         self.attrs[UnUri.K_QRY] = self.parse_query(self.uri.query)
         self.attrs[UnUri.K_URI] = uri_string
 
