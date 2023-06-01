@@ -1,8 +1,8 @@
 sinclude .env # create from example.env
 .PHONY: install test watch all clean
 
-PROJECT=un-yaml
-PACKAGE=un_yaml
+REPO=un-yaml
+PROJECT=un_yaml
 
 TEST_README=--codeblocks
 ifeq ($(TEST_OS),windows-latest)
@@ -50,9 +50,9 @@ clean-git:
 	git branch | grep -v '*' | grep -v 'main' | xargs git branch -D
 
 pip-install:
-	python3 -m pip install $(PACKAGE)
+	python3 -m pip install $(PROJECT)
 
 pip-upgrade:
-	python3 -m pip install --upgrade $(PACKAGE)
+	python3 -m pip install --upgrade $(PROJECT)
 
 

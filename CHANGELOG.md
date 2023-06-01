@@ -4,6 +4,7 @@
 
 - enable writing yaml files
 - add typecheck via mypy
+- parse URI path components as K_UPTH
 
 ## 0.1.0 (2023-05-31)
 
