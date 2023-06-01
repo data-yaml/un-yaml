@@ -1,5 +1,7 @@
 # Parse a UDC "app+protocol://" URI
 
+from json import loads
+from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 
@@ -13,12 +15,27 @@ class UnUri:
     K_TOOL = "_tool"
     K_URI = "_uri"
 
+    @staticmethod
+    def ExtractJson(result):
+        if  not isinstance(result, str) or result[0] != '{':
+            return result
+        if "'" in result:
+            result = result.replace("'", '"')
+        return loads(result)
+    
+    @staticmethod
+    def NormalizeQuery(query: dict) -> dict:
+        for key, value in query.items():
+            if isinstance(value, list): # non-parsed
+                query[key] = UnUri.ExtractJson(value[0])
+        return query
+
     def __init__(self, uri_string: str):
         self.uri = urlparse(uri_string)
-        self.attrs = self.parse_fragments(self.uri.fragment)
+        self.attrs = self.parse_query(self.uri.fragment)
         self.parse_scheme(self.uri.scheme)
         self.attrs[UnUri.K_HOST] = self.uri.hostname or "localhost"
-        self.attrs[UnUri.K_QRY] = self.uri.query
+        self.attrs[UnUri.K_QRY] = self.parse_query(self.uri.query)
         self.attrs[UnUri.K_URI] = uri_string
 
     def __repr__(self):
@@ -27,10 +44,10 @@ class UnUri:
     def get(self, key):
         return self.attrs.get(key)
 
-    def parse_fragments(self, fragment: str):
-        list_dict = parse_qs(fragment)
+    def parse_query(self, query: str) -> dict[str, Any]:
+        list_dict = parse_qs(query)
         scalars = {k: v[0] for k, v in list_dict.items()}
-        return scalars
+        return UnUri.NormalizeQuery(scalars)
 
     def parse_scheme(self, scheme: str):
         schemes = scheme.split(UnUri.SEP)
