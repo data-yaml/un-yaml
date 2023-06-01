@@ -31,7 +31,7 @@ class UnCli(UnYaml):
         return kwargs
 
     def __init__(self, file=CLI_YAML) -> None:
-        yaml_data = UnYaml.load_yaml(file, "tests")
+        yaml_data = UnYaml.LoadYaml(file, "tests")
         super().__init__(yaml_data)
         if UnCli.CMD not in self.cfg:
             raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.cfg}")

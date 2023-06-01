@@ -12,7 +12,7 @@ class UnYaml:
     REF_ERROR = f"Value for Key {REF} does not start with {PREFIX}"
 
     @staticmethod
-    def load_yaml(filename: str, pkg: str, sub: str = "") -> dict:
+    def LoadYaml(filename: str, pkg: str, sub: str = "") -> dict:
         yaml_dir = resources.files(pkg)
         if len(sub) > 0:
             yaml_dir = yaml_dir / sub
@@ -21,6 +21,13 @@ class UnYaml:
         yaml_data = safe_load(yaml_string)
         return yaml_data
 
+    @staticmethod
+    def New(app: str, doc: str, info={}) -> "UnYaml":
+        info['app'] = app
+        info['doc'] = doc
+        yaml_data = {UnYaml.KEY: info}
+        return UnYaml(yaml_data)
+    
     def __init__(self, yaml_data: dict) -> None:
         self.cfg = yaml_data
         self._info = self.cfg[UnYaml.KEY]

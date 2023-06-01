@@ -1,3 +1,5 @@
+from contextlib import nullcontext as does_not_raise
+
 from un_yaml import UnCli, UnYaml
 
 from .conftest import pytest, pytestmark  # NOQA F401
@@ -9,11 +11,18 @@ def un():
 
 
 def test_un_load():
-    yaml_data = UnYaml.load_yaml(UnCli.CLI_YAML, "tests")
+    yaml_data = UnYaml.LoadYaml(UnCli.CLI_YAML, "tests")
     assert yaml_data
     assert UnYaml.KEY in yaml_data
     un = UnYaml(yaml_data)
     assert un
+
+
+def test_un_new():
+    un = UnYaml.New('app', 'doc')
+    assert un
+    assert un.info("app") == "app"
+    assert un.info("doc") == "doc"
 
 
 def test_un_init(un: UnYaml):
@@ -57,7 +66,7 @@ def test_un_re_expand(un: UnYaml):
 
 def test_un_get_handler(un: UnYaml):
     for key in ["doc"]:
-        with pytest.raises(ValueError):
+        with does_not_raise():
             un.get_handler(key)
     with pytest.raises(ValueError):
         un.get_handler("unknown")
