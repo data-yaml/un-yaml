@@ -23,7 +23,7 @@ update:
 	poetry update
 
 typecheck:
-	poetry run mypy $(PROJECT)
+	poetry run mypy $(PROJECT) tests
 
 
 test:

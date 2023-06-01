@@ -27,7 +27,7 @@ def test_un_info(un: UnYaml):
 
 
 def test_un_expand(un: UnYaml):
-    obj = {}
+    obj = {} # type: ignore
     assert obj == un.expand(obj)
     literal = {"key": "value"}
     assert literal == un.expand(literal)
@@ -57,6 +57,7 @@ def test_un_re_expand(un: UnYaml):
 
 def test_un_get_handler(un: UnYaml):
     for key in ["doc"]:
-        assert un.get_handler(key)
+        with pytest.raises(ValueError):
+            un.get_handler(key)
     with pytest.raises(ValueError):
         un.get_handler("unknown")
