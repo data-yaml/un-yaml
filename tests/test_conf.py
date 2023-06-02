@@ -1,14 +1,17 @@
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 from un_yaml import UnConf
 
 from .conftest import pytest, pytestmark  # NOQA F401
-from tempfile import TemporaryDirectory
-from pathlib import Path
+
 
 @pytest.fixture
 def un():
     with TemporaryDirectory() as tmpdirname:
         path = Path(tmpdirname) / UnConf.DEFAULT
         yield UnConf(path, app="app", doc="doc")
+
 
 def test_conf_new(un: UnConf):
     assert un
@@ -23,6 +26,7 @@ def test_conf_default():
         assert un.info("app") == "data-yaml"
         assert un.info("doc") == "UnConf"
 
+
 def test_conf_save():
     test_dict = {"a": 1, "b": 2}
     with TemporaryDirectory() as tmpdirname:
@@ -31,7 +35,7 @@ def test_conf_save():
         assert un1.info("a") == 1
         un1.put("c", 3)
         un1.save()
-        
+
         un1.put("c", 4)
         un2 = UnConf(path)
         assert un2.get("c") == 3
@@ -43,7 +47,7 @@ def test_conf_save():
         assert un2.data == un1.data
 
 
-def vd(k: str, val = None):
+def vd(k: str, val=None):
     return {k: val} if val else {k: f"val_{k}"}
 
 
@@ -68,7 +72,6 @@ def test_conf_put(un: UnConf):
     un.put(R2, v2)
     assert un.get(R2) == v2
 
-
     k11 = R1 + UnConf.SEP + C1
     v3 = vd(C3)
     un.put(k11, v3)
@@ -77,8 +80,8 @@ def test_conf_put(un: UnConf):
 
     v4 = vd(C4)
     k14 = R1 + UnConf.SEP + C4
-    print('R1', un.data[R1])
+    print("R1", un.data[R1])
     un.put(k14, v4[C4])
-    print('R1', un.data[R1])
+    print("R1", un.data[R1])
     assert un.get(R1).get(C1) == v3
     assert un.get(R1).get(C4) == v4[C4]

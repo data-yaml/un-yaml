@@ -12,6 +12,7 @@ async def test_uri():
     assert "s3://quilt-example" == uri.endpoint()
     assert TEST_URI in str(uri)
 
+
 async def test_uri_keys():
     TEST_URI = "quilt+s3://fubar.com/foo/bar?baz=qux#frag=ment"
     uri = UnUri(TEST_URI)
@@ -23,6 +24,7 @@ async def test_uri_keys():
     assert a[UnUri.K_UPTH] == ["foo", "bar"]
     assert a[UnUri.K_QRY] == {"baz": "qux"}
     assert a[UnUri.K_URI] == TEST_URI
+
 
 async def test_uri_query():
     TEST_QUERY: dict = {"name": ["foo"], "fields": ["{'bar':'baz'}"]}

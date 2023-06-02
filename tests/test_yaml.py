@@ -29,7 +29,7 @@ def test_yaml_info(un: UnYaml):
 
 
 def test_yaml_expand(un: UnYaml):
-    obj = {} # type: ignore
+    obj = {}  # type: ignore
     assert obj == un.expand(obj)
     literal = {"key": "value"}
     assert literal == un.expand(literal)

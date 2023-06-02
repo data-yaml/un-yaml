@@ -18,16 +18,16 @@ class UnUri:
 
     @staticmethod
     def ExtractJson(result):
-        if  not isinstance(result, str) or result[0] != '{':
+        if not isinstance(result, str) or result[0] != "{":
             return result
         if "'" in result:
-            result = result.replace("'", '"') # JSON parser requires double quotes
+            result = result.replace("'", '"')  # JSON parser requires double quotes
         return loads(result)
-    
+
     @staticmethod
     def NormalizeQuery(query: dict) -> dict:
         for key, value in query.items():
-            if isinstance(value, list): # non-parsed
+            if isinstance(value, list):  # non-parsed
                 query[key] = UnUri.ExtractJson(value[0])
         return query
 
@@ -36,7 +36,7 @@ class UnUri:
         self.attrs = self.parse_query(self.uri.fragment)
         self.parse_scheme(self.uri.scheme)
         self.attrs[UnUri.K_HOST] = self.uri.hostname or "localhost"
-        self.attrs[UnUri.K_UPTH] = self.uri.path.strip('/').split("/")
+        self.attrs[UnUri.K_UPTH] = self.uri.path.strip("/").split("/")
         self.attrs[UnUri.K_QRY] = self.parse_query(self.uri.query)
         self.attrs[UnUri.K_URI] = uri_string
 

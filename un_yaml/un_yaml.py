@@ -1,4 +1,3 @@
-import logging
 from importlib import import_module, resources
 from typing import Any, Callable
 
@@ -21,7 +20,7 @@ class UnYaml:
         yaml_string = yaml_file.read_text()
         yaml_data = safe_load(yaml_string)
         return yaml_data
-    
+
     def __init__(self, yaml_data: dict) -> None:
         self.data = yaml_data
         self._info = self.data[UnYaml.KEY]
@@ -62,7 +61,7 @@ class UnYaml:
             result = self.expand(item)
 
         return result
-    
+
     def get_handler(self, key: str) -> Callable:
         handlers = self.info("handlers")
         handler = handlers.get(key)
