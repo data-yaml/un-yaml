@@ -6,8 +6,9 @@ from pathlib import Path  # NOQA F401
 from sys import stdout
 from typing import Any
 
-__version__ = version("un_yaml")
+__version__: str = version("un_yaml")
 
+from .un_conf import UnConf
 from .un_uri import UnUri
 from .un_yaml import UnYaml
 
@@ -30,13 +31,15 @@ class UnCli(UnYaml):
         kwargs["type"] = eval(kwargs["type"]) if "type" in kwargs else str
         return kwargs
 
-    def __init__(self, file=CLI_YAML) -> None:
-        yaml_data = UnYaml.load_yaml(file, "tests")
+    def __init__(self, file=CLI_YAML, dir=".") -> None:
+        yaml_data = UnYaml.LoadYaml(file, "tests")
         super().__init__(yaml_data)
-        if UnCli.CMD not in self.cfg:
-            raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.cfg}")
+        if UnCli.CMD not in self.data:
+            raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.data}")
         self.cmds = self.get(UnCli.CMD)
         self.doc = self.get_handler("doc")()
+        self.path = Path(dir) / UnConf.DEFAULT
+        self.conf = UnConf(self.path, doc=type(self.doc).__name__)
 
     def parse_version(self, parser: ArgumentParser) -> None:
         doc_name = self.info("doc")
@@ -68,9 +71,6 @@ class UnCli(UnYaml):
         if hasattr(args, "version") and args.version:
             print(args.version, file=out)
             return False
-        if not hasattr(args, "command"):
-            logging.error(f"No command found in: {args}\n{argv}")
-            return False
         return await self.execute(args, out)
 
     def parse(self, argv: Sequence[str] | None) -> Namespace | None:
@@ -86,10 +86,19 @@ class UnCli(UnYaml):
         logging.debug(f"handler: {handler}")
         return handler(uri.attrs)
 
+    def log_resource(self, argv: dict):
+        uri = argv[UnUri.ARG_URI]
+        tool = uri.tool()
+        opts = {str(uri): argv}
+        logging.debug(f"tool[{tool}] {opts}")
+        self.conf.put(tool, opts)
+        self.conf.save()
+
     def resource(self, argv: dict) -> dict:
-        """Hardcode resource transformation, for now"""
+        """Hardcode resource transformation to key named URI, for now"""
         if UnUri.ARG_URI in argv:
             uri = argv[UnUri.ARG_URI]
+            self.log_resource(argv)
             argv[UnUri.ARG_RESOURCE] = self.get_resource(uri)
         return argv
 

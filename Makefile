@@ -1,6 +1,9 @@
 sinclude .env # create from example.env
 .PHONY: install test watch all clean
 
+REPO=un-yaml
+PROJECT=un_yaml
+
 TEST_README=--codeblocks
 ifeq ($(TEST_OS),windows-latest)
 	TEST_README=''
@@ -19,6 +22,10 @@ install:
 update:
 	poetry update
 
+typecheck:
+	poetry run mypy $(PROJECT) tests
+
+
 test:
 	poetry run pytest $(TEST_README) --cov --cov-report xml:coverage.xml
 
@@ -33,25 +40,19 @@ tag:
 	git tag `poetry version | awk '{print $$2}'`
 	git push --tags
 
-pypi: clean
+pypi: clean clean-git
 	poetry version
 	poetry build
 	poetry publish --dry-run
-	echo "poetry version prepatch" # major minor
+	make tag
 
 clean-git:
 	git branch | grep -v '*' | grep -v 'main' | xargs git branch -D
 
-which:
-	which udc
-	udc --version
-
 pip-install:
-	python3 -m pip install udc
-	make which
+	python3 -m pip install $(PROJECT)
 
 pip-upgrade:
-	python3 -m pip install --upgrade udc
-	make which
+	python3 -m pip install --upgrade $(PROJECT)
 
 
