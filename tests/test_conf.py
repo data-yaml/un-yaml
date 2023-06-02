@@ -23,6 +23,20 @@ def test_conf_default():
         assert un.info("app") == "data-yaml"
         assert un.info("doc") == "UnConf"
 
+def test_conf_save():
+    test_dict = {"a": 1, "b": 2}
+    with TemporaryDirectory() as tmpdirname:
+        path = Path(tmpdirname) / "test1.yaml"
+        un1 = UnConf(path, **test_dict)
+        assert un1.info("a") == 1
+        un1.put("c", 3)
+        un1.save()
+        
+        un1.put("c", 4)
+        un2 = UnConf(path)
+        assert un2.get("c") == 3
+        assert un2.data == un1.data
+    pass
 
 def vd(k: str, val = None):
     return {k: val} if val else {k: f"val_{k}"}

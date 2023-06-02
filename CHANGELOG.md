@@ -2,7 +2,7 @@
 
 ## 0.2.0 (2023-06-01)
 
-- un_conf for writeable yaml files: New, put
+- UnConf for writeable yaml files: New, put, save
 - add typecheck via mypy
 - parse URI path components as K_UPTH
 

@@ -23,7 +23,9 @@ class UnConf(UnYaml):
             safe_dump(yaml_data, outfile)
 
     @staticmethod
-    def ReadYaml(path: Path) -> dict:
+    def ReadYaml(path: Path, defaults = {}) -> dict:
+        if not path.exists():
+            return UnConf.NewYaml(defaults)
         yaml_string = path.read_text()
         yaml_data = safe_load(yaml_string)
         return yaml_data
@@ -36,9 +38,15 @@ class UnConf(UnYaml):
 
 
     def __init__(self, path: Path, **defaults) -> None:
-        yaml_data = UnConf.ReadYaml(path) if path.exists() else UnConf.NewYaml(defaults)
+        yaml_data = UnConf.ReadYaml(path, defaults)
         super().__init__(yaml_data)
         self.path = path
+
+    def save(self):
+        UnConf.SaveYaml(self.path, self.data)
+
+    def reload(self):
+        self.data = UnConf.ReadYaml(self.path)
     
     def put(self, keylist: str, value: Any):
         keys = keylist.split(UnConf.SEP)
