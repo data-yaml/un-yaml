@@ -42,6 +42,9 @@ class UnUri:
 
     def __repr__(self):
         return f"UnUri({self.attrs[UnUri.K_URI]})"
+    
+    def __str__(self):
+        return self.attrs[UnUri.K_URI]
 
     def get(self, key):
         return self.attrs.get(key)

@@ -23,6 +23,7 @@ class UnYaml:
 
     def __init__(self, yaml_data: dict) -> None:
         self.data = yaml_data
+        assert self.data, "UnYaml: no data"
         self._info = self.data[UnYaml.KEY]
 
     def info(self, key: str) -> Any:

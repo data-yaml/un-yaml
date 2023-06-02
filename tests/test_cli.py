@@ -1,7 +1,6 @@
 from io import StringIO
-from os import chdir
 from tempfile import TemporaryDirectory
-from un_yaml import UnCli
+from un_yaml import UnCli, UnUri, UnConf
 
 from .conftest import pytest, pytestmark, TEST_URI  # NOQA F401
 
@@ -46,8 +45,26 @@ async def test_cli_run(cli: UnCli, buf: StringIO):
     assert "list" in buf.getvalue()
 
 def test_cli_conf():
+    uri = UnUri(TEST_URI)
+    tool = uri.tool()
+    argv = {
+       UnUri.ARG_URI: uri,
+       "name": "test",       
+    }
     with TemporaryDirectory() as tmpdir:
-        chdir(tmpdir)
-        cli = UnCli()
-        assert cli.conf
-        assert cli.doc == cli.conf.info("doc")
+        cli = UnCli(dir=tmpdir)
+        cf = cli.conf
+        assert cf
+        assert cli.doc == cf.info("doc")
+        assert not cf.get(tool)
+        cli.log_resource(argv)
+        opts = cf.get(tool)
+        assert opts
+        print(opts)
+        args = opts.get(TEST_URI)
+        assert args
+        assert args["name"] == "test"
+
+        assert not cli.path.exists()
+
+

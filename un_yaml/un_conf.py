@@ -31,6 +31,7 @@ class UnConf(UnYaml):
             return UnConf.NewYaml(defaults)
         yaml_string = path.read_text()
         yaml_data = safe_load(yaml_string)
+        assert yaml_data is not None, f"ReadYaml can't load '{yaml_string}' from {path}"
         return yaml_data
 
     @classmethod
@@ -40,9 +41,9 @@ class UnConf(UnYaml):
         return yaml_data
 
     def __init__(self, path: Path, **defaults) -> None:
-        yaml_data = UnConf.ReadYaml(path, defaults)
+        self.path = path.resolve()
+        yaml_data = UnConf.ReadYaml(self.path, defaults)
         super().__init__(yaml_data)
-        self.path = path
 
     def save(self):
         UnConf.SaveYaml(self.path, self.data)

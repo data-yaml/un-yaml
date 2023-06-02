@@ -32,14 +32,14 @@ class UnCli(UnYaml):
         kwargs["type"] = eval(kwargs["type"]) if "type" in kwargs else str
         return kwargs
 
-    def __init__(self, file=CLI_YAML) -> None:
+    def __init__(self, file=CLI_YAML, dir='.') -> None:
         yaml_data = UnYaml.LoadYaml(file, "tests")
         super().__init__(yaml_data)
         if UnCli.CMD not in self.data:
             raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.data}")
         self.cmds = self.get(UnCli.CMD)
         self.doc = self.get_handler("doc")()
-        self.path = Path('.') / UnConf.DEFAULT
+        self.path = Path(dir) / UnConf.DEFAULT
         self.conf = UnConf(self.path, doc=self.doc)
 
     def parse_version(self, parser: ArgumentParser) -> None:
@@ -90,7 +90,10 @@ class UnCli(UnYaml):
     def log_resource(self, argv: dict):
         uri = argv[UnUri.ARG_URI]
         tool = uri.tool()
+        opts = {str(uri): argv}
         logging.debug(f"tool: {tool}")
+        self.conf.put(tool, opts)
+        # self.conf.save()
 
     def resource(self, argv: dict) -> dict:
         """Hardcode resource transformation to key named URI, for now"""
