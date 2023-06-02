@@ -21,13 +21,6 @@ class UnYaml:
         yaml_string = yaml_file.read_text()
         yaml_data = safe_load(yaml_string)
         return yaml_data
-
-    @staticmethod
-    def New(app: str, doc: str, info={}) -> "UnYaml":
-        info['app'] = app
-        info['doc'] = doc
-        yaml_data = {UnYaml.KEY: info}
-        return UnYaml(yaml_data)
     
     def __init__(self, yaml_data: dict) -> None:
         self.data = yaml_data
