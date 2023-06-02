@@ -35,8 +35,13 @@ def test_conf_save():
         un1.put("c", 4)
         un2 = UnConf(path)
         assert un2.get("c") == 3
+        assert un2.data != un1.data
+
+        assert un1.get("c") == 4
+        un1.reload()
+        assert un1.get("c") == 3
         assert un2.data == un1.data
-    pass
+
 
 def vd(k: str, val = None):
     return {k: val} if val else {k: f"val_{k}"}

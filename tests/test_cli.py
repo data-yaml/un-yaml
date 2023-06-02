@@ -1,7 +1,6 @@
 from io import StringIO
-from pathlib import Path
 
-from un_yaml import UnCli, UnUri
+from un_yaml import UnCli
 
 from .conftest import pytest, pytestmark  # NOQA F401
 
@@ -23,12 +22,6 @@ def test_cli(cli: UnCli):
     commands = cli.get(UnCli.CMD)
     assert commands
     assert "list" in commands
-
-
-def test_cli_eval():
-    assert eval("str") == str
-    assert eval("Path") == Path
-    assert eval("UnUri") == UnUri
 
 
 def test_cli_arg():
