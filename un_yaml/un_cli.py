@@ -8,8 +8,10 @@ from typing import Any
 
 __version__ = version("un_yaml")
 
+from .un_conf import UnConf
 from .un_uri import UnUri
 from .un_yaml import UnYaml
+
 
 # Harcode most parameters for now
 # TODO: infer them from the YAML file
@@ -37,6 +39,8 @@ class UnCli(UnYaml):
             raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.data}")
         self.cmds = self.get(UnCli.CMD)
         self.doc = self.get_handler("doc")()
+        self.path = Path('.') / UnConf.DEFAULT
+        self.conf = UnConf(self.path, doc=self.doc)
 
     def parse_version(self, parser: ArgumentParser) -> None:
         doc_name = self.info("doc")
@@ -83,11 +87,17 @@ class UnCli(UnYaml):
         logging.debug(f"handler: {handler}")
         return handler(uri.attrs)
 
+    def log_resource(self, argv: dict):
+        uri = argv[UnUri.ARG_URI]
+        tool = uri.tool()
+        logging.debug(f"tool: {tool}")
+
     def resource(self, argv: dict) -> dict:
-        """Hardcode resource transformation, for now"""
+        """Hardcode resource transformation to key named URI, for now"""
         if UnUri.ARG_URI in argv:
             uri = argv[UnUri.ARG_URI]
             argv[UnUri.ARG_RESOURCE] = self.get_resource(uri)
+            self.log_resource(argv)
         return argv
 
     async def execute(self, args: Namespace, out=stdout):
