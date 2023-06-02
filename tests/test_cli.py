@@ -1,6 +1,7 @@
 from io import StringIO
 from tempfile import TemporaryDirectory
 from un_yaml import UnCli, UnUri, UnConf
+from sys import platform
 
 from .conftest import pytest, pytestmark, TEST_URI  # NOQA F401
 
@@ -44,6 +45,7 @@ async def test_cli_run(cli: UnCli, buf: StringIO):
     await cli.run(["list", TEST_URI], buf)
     assert "list" in buf.getvalue()
 
+@pytest.mark.skipif(platform.startswith('win'), reason="tmp folder name issue")
 def test_cli_conf():
     uri = UnUri(TEST_URI)
     tool = uri.tool()
