@@ -68,9 +68,6 @@ class UnCli(UnYaml):
         if hasattr(args, "version") and args.version:
             print(args.version, file=out)
             return False
-        if not hasattr(args, "command"):
-            logging.error(f"No command found in: {args}\n{argv}")
-            return False
         return await self.execute(args, out)
 
     def parse(self, argv: Sequence[str] | None) -> Namespace | None:
