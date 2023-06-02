@@ -21,7 +21,7 @@ class UnUri:
         if  not isinstance(result, str) or result[0] != '{':
             return result
         if "'" in result:
-            result = result.replace("'", '"')
+            result = result.replace("'", '"') # JSON parser requires double quotes
         return loads(result)
     
     @staticmethod
