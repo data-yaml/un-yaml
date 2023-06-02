@@ -26,7 +26,7 @@ def test_un_new():
 
 
 def test_un_init(un: UnYaml):
-    assert UnYaml.KEY in un.cfg
+    assert UnYaml.KEY in un.data
     assert isinstance(un, UnYaml)
 
 
@@ -41,7 +41,7 @@ def test_un_expand(un: UnYaml):
     literal = {"key": "value"}
     assert literal == un.expand(literal)
     ref = {UnYaml.REF: "#/variables/uri"}
-    assert un.cfg["variables"]["uri"] == un.expand(ref)
+    assert un.data["variables"]["uri"] == un.expand(ref)
 
 
 def test_un_get(un: UnYaml):
@@ -52,6 +52,18 @@ def test_un_get(un: UnYaml):
     arg0 = un.get("commands/list/arguments/0")
     assert isinstance(arg0, dict)
     assert "uri" == arg0.get("name")
+
+
+def val(s: str):
+    return f"val_{s}"
+
+
+def test_un_put():
+    un: UnYaml = UnYaml.New("app", "doc")
+    k = ["test_un_put", "next", "another", "yet"]
+    v0 = val(k[0])
+    un.put(k[0], v0)
+    assert un.get(k[0]) == v0
 
 
 def test_un_re_expand(un: UnYaml):

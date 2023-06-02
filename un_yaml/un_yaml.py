@@ -29,8 +29,8 @@ class UnYaml:
         return UnYaml(yaml_data)
     
     def __init__(self, yaml_data: dict) -> None:
-        self.cfg = yaml_data
-        self._info = self.cfg[UnYaml.KEY]
+        self.data = yaml_data
+        self._info = self.data[UnYaml.KEY]
 
     def info(self, key: str) -> Any:
         return self._info.get(key)
@@ -61,14 +61,18 @@ class UnYaml:
             return result[int(key)]
         return result.get(key)
 
-    def get(self, keys: str) -> Any:
-        result = self.cfg
-        for key in keys.split(UnYaml.SEP):
+    def get(self, keylist: str) -> Any:
+        result = self.data
+        for key in keylist.split(UnYaml.SEP):
             item = self._get(result, key)
             result = self.expand(item)
 
         return result
-
+    
+    def put(self, key: str, value: Any):
+        parent = self.data
+        parent[key] = value
+        
     def get_handler(self, key: str) -> Callable:
         handlers = self.info("handlers")
         handler = handlers.get(key)
