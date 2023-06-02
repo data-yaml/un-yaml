@@ -18,26 +18,26 @@ def buf():
     result.close()
 
 
-def test_un_cli(cli: UnCli):
+def test_cli(cli: UnCli):
     assert cli
     commands = cli.get(UnCli.CMD)
     assert commands
     assert "list" in commands
 
 
-def test_un_cli_eval():
+def test_cli_eval():
     assert eval("str") == str
     assert eval("Path") == Path
     assert eval("UnUri") == UnUri
 
 
-def test_un_cli_arg():
+def test_cli_arg():
     d = {"type": "Path"}
     kw = UnCli.ARG_KWS(d)
     assert kw
 
 
-async def test_un_cli_parser(cli: UnCli, buf: StringIO):
+async def test_cli_parser(cli: UnCli, buf: StringIO):
     argv = ["--version"]
     parser = cli.make_parser()
     assert parser

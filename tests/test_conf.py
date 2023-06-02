@@ -10,13 +10,13 @@ def un():
         path = Path(tmpdirname) / UnConf.DEFAULT
         yield UnConf(path, app="app", doc="doc")
 
-def test_un_new(un: UnConf):
+def test_conf_new(un: UnConf):
     assert un
     assert un.info("app") == "app"
     assert un.info("doc") == "doc"
 
 
-def test_un_default():
+def test_conf_default():
     with TemporaryDirectory() as tmpdirname:
         path = Path(tmpdirname) / UnConf.DEFAULT
         un = UnConf(path)
@@ -28,7 +28,7 @@ def vd(k: str, val = None):
     return {k: val} if val else {k: f"val_{k}"}
 
 
-def test_un_put(un: UnConf):
+def test_conf_put(un: UnConf):
     R1 = "root1"
     C1 = "child1"
     R2 = "root2"

@@ -10,7 +10,7 @@ def un():
     return UnCli()
 
 
-def test_un_load():
+def test_yaml_load():
     yaml_data = UnYaml.LoadYaml(UnCli.CLI_YAML, "tests")
     assert yaml_data
     assert UnYaml.KEY in yaml_data
@@ -18,17 +18,17 @@ def test_un_load():
     assert un
 
 
-def test_un_init(un: UnYaml):
+def test_yaml_init(un: UnYaml):
     assert UnYaml.KEY in un.data
     assert isinstance(un, UnYaml)
 
 
-def test_un_info(un: UnYaml):
+def test_yaml_info(un: UnYaml):
     assert "UnCli" == un.info("app")
     assert "un_yaml" == un.info("doc")
 
 
-def test_un_expand(un: UnYaml):
+def test_yaml_expand(un: UnYaml):
     obj = {} # type: ignore
     assert obj == un.expand(obj)
     literal = {"key": "value"}
@@ -37,7 +37,7 @@ def test_un_expand(un: UnYaml):
     assert un.data["variables"]["uri"] == un.expand(ref)
 
 
-def test_un_get(un: UnYaml):
+def test_yaml_get(un: UnYaml):
     assert un.get(UnYaml.KEY)
     assert not un.get("cmd/list")
     assert un.get("commands/list")
@@ -47,7 +47,7 @@ def test_un_get(un: UnYaml):
     assert "uri" == arg0.get("name")
 
 
-def test_un_re_expand(un: UnYaml):
+def test_yaml_re_expand(un: UnYaml):
     getref = un.get("commands/get")
     assert "help" in getref
     assert "arguments" in getref
@@ -57,7 +57,7 @@ def test_un_re_expand(un: UnYaml):
     assert dir["type"] == "Path"
 
 
-def test_un_get_handler(un: UnYaml):
+def test_yaml_get_handler(un: UnYaml):
     for key in ["doc"]:
         with does_not_raise():
             un.get_handler(key)
