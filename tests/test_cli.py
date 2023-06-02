@@ -56,14 +56,19 @@ def test_cli_conf():
         cf = cli.conf
         assert cf
         assert tmpdir in str(cli.path)
+        assert tmpdir in str(cf.path)
         assert cli.doc == cf.info("doc")
         assert not cf.get(tool)
 
         assert not cli.path.exists()
         cli.log_resource(argv)
+        assert cli.path.exists()
+
+        contents = cli.path.read_text()
+        assert "name: test" in contents
+
         opts = cf.get(tool)
         assert opts
-        print(opts)
         args = opts.get(TEST_URI)
         assert args
         assert args["name"] == "test"

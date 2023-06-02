@@ -91,16 +91,16 @@ class UnCli(UnYaml):
         uri = argv[UnUri.ARG_URI]
         tool = uri.tool()
         opts = {str(uri): argv}
-        logging.debug(f"tool: {tool}")
+        logging.debug(f"tool[{tool}] {opts}")
         self.conf.put(tool, opts)
-        # self.conf.save()
+        self.conf.save()
 
     def resource(self, argv: dict) -> dict:
         """Hardcode resource transformation to key named URI, for now"""
         if UnUri.ARG_URI in argv:
             uri = argv[UnUri.ARG_URI]
-            argv[UnUri.ARG_RESOURCE] = self.get_resource(uri)
             self.log_resource(argv)
+            argv[UnUri.ARG_RESOURCE] = self.get_resource(uri)
         return argv
 
     async def execute(self, args: Namespace, out=stdout):

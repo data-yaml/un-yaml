@@ -31,7 +31,9 @@ class UnConf(UnYaml):
             return UnConf.NewYaml(defaults)
         yaml_string = path.read_text()
         yaml_data = safe_load(yaml_string)
-        assert yaml_data is not None, f"ReadYaml can't load '{yaml_string}' from {path}"
+
+        if not yaml_data:
+            return UnConf.NewYaml(defaults)
         return yaml_data
 
     @classmethod
