@@ -8,12 +8,20 @@ from pathlib import Path
 def un():
     with TemporaryDirectory() as tmpdirname:
         path = Path(tmpdirname) / UnConf.DEFAULT
-        return UnConf(path, app="app", doc="doc")
+        yield UnConf(path, app="app", doc="doc")
 
 def test_un_new(un: UnConf):
     assert un
     assert un.info("app") == "app"
     assert un.info("doc") == "doc"
+
+
+def test_un_default():
+    with TemporaryDirectory() as tmpdirname:
+        path = Path(tmpdirname) / UnConf.DEFAULT
+        un = UnConf(path)
+        assert un.info("app") == "data-yaml"
+        assert un.info("doc") == "UnConf"
 
 
 def vd(k: str, val = None):
