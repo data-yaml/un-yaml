@@ -41,9 +41,9 @@ class UnConf(UnYaml):
         return yaml_data
 
     def __init__(self, path: Path, **defaults) -> None:
-        self.path = path.resolve()
-        yaml_data = UnConf.ReadYaml(self.path, defaults)
+        yaml_data = UnConf.ReadYaml(path.resolve(), defaults)
         super().__init__(yaml_data)
+        self.path = path.resolve()
 
     def save(self):
         UnConf.SaveYaml(self.path, self.data)

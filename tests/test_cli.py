@@ -55,8 +55,11 @@ def test_cli_conf():
         cli = UnCli(dir=tmpdir)
         cf = cli.conf
         assert cf
+        assert tmpdir in str(cli.path)
         assert cli.doc == cf.info("doc")
         assert not cf.get(tool)
+
+        assert not cli.path.exists()
         cli.log_resource(argv)
         opts = cf.get(tool)
         assert opts
@@ -65,6 +68,5 @@ def test_cli_conf():
         assert args
         assert args["name"] == "test"
 
-        assert not cli.path.exists()
 
 

@@ -6,7 +6,7 @@ from pathlib import Path  # NOQA F401
 from sys import stdout
 from typing import Any
 
-__version__ = version("un_yaml")
+__version__: str = version("un_yaml")
 
 from .un_conf import UnConf
 from .un_uri import UnUri
