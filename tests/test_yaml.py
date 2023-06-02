@@ -54,18 +54,6 @@ def test_un_get(un: UnYaml):
     assert "uri" == arg0.get("name")
 
 
-def val(s: str):
-    return f"val_{s}"
-
-
-def test_un_put():
-    un: UnYaml = UnYaml.New("app", "doc")
-    k = ["test_un_put", "next", "another", "yet"]
-    v0 = val(k[0])
-    un.put(k[0], v0)
-    assert un.get(k[0]) == v0
-
-
 def test_un_re_expand(un: UnYaml):
     getref = un.get("commands/get")
     assert "help" in getref
@@ -82,3 +70,45 @@ def test_un_get_handler(un: UnYaml):
             un.get_handler(key)
     with pytest.raises(ValueError):
         un.get_handler("unknown")
+
+
+def vd(k: str, val = None):
+    return {k: val} if val else {k: f"val_{k}"}
+
+
+def test_un_put():
+    un: UnYaml = UnYaml.New("app", "doc")
+    R1 = "root1"
+    C1 = "child1"
+    R2 = "root2"
+    C2 = "child2"
+    C3 = "child3"
+    C4 = "child4"
+
+    v1 = vd(C1)
+    v0 = vd(R1, v1)
+    assert v0
+    assert v0[R1] == v1
+
+    un.put(R1, v1)
+    assert un.get(R1) == v1
+    assert un.get(R1).get(C1) == v1[C1]
+
+    v2 = vd(C2)
+    un.put(R2, v2)
+    assert un.get(R2) == v2
+
+
+    k11 = R1 + UnYaml.SEP + C1
+    v3 = vd(C3)
+    un.put(k11, v3)
+    assert un.get(k11) == v3
+    assert un.get(R1).get(C1) == v3
+
+    v4 = vd(C4)
+    k14 = R1 + UnYaml.SEP + C4
+    print('R1', un.data[R1])
+    un.put(k14, v4[C4])
+    print('R1', un.data[R1])
+    assert un.get(R1).get(C1) == v3
+    assert un.get(R1).get(C4) == v4[C4]

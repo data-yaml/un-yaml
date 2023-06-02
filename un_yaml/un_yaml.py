@@ -1,3 +1,4 @@
+import logging
 from importlib import import_module, resources
 from typing import Any, Callable
 
@@ -69,10 +70,17 @@ class UnYaml:
 
         return result
     
-    def put(self, key: str, value: Any):
+    def put(self, keylist: str, value: Any):
+        keys = keylist.split(UnYaml.SEP)
+        tail = keys.pop()
+
         parent = self.data
-        parent[key] = value
-        
+        for child in keys:
+            logging.debug(f"child: {child} parent: {parent}")
+            parent = parent[child]
+            logging.debug(f"+parent: {parent}")
+        parent[tail] = value
+
     def get_handler(self, key: str) -> Callable:
         handlers = self.info("handlers")
         handler = handlers.get(key)
