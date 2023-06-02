@@ -40,7 +40,7 @@ class UnCli(UnYaml):
         self.cmds = self.get(UnCli.CMD)
         self.doc = self.get_handler("doc")()
         self.path = Path(dir) / UnConf.DEFAULT
-        self.conf = UnConf(self.path, doc=self.doc)
+        self.conf = UnConf(self.path, doc=type(self.doc).__name__)
 
     def parse_version(self, parser: ArgumentParser) -> None:
         doc_name = self.info("doc")

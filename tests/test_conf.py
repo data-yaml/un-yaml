@@ -80,8 +80,6 @@ def test_conf_put(un: UnConf):
 
     v4 = vd(C4)
     k14 = R1 + UnConf.SEP + C4
-    print("R1", un.data[R1])
     un.put(k14, v4[C4])
-    print("R1", un.data[R1])
     assert un.get(R1).get(C1) == v3
     assert un.get(R1).get(C4) == v4[C4]

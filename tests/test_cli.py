@@ -57,7 +57,7 @@ def test_cli_conf():
         assert cf
         assert tmpdir in str(cli.path)
         assert tmpdir in str(cf.path)
-        assert cli.doc == cf.info("doc")
+        assert "Wrapper" == cf.info("doc")
         assert not cf.get(tool)
 
         assert not cli.path.exists()
