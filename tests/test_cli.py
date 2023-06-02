@@ -1,9 +1,10 @@
+import sys
 from io import StringIO
 from tempfile import TemporaryDirectory
-from un_yaml import UnCli, UnUri, UnConf
-from sys import platform
 
-from .conftest import pytest, pytestmark, TEST_URI  # NOQA F401
+from un_yaml import UnCli, UnUri
+
+from .conftest import TEST_URI, pytest, pytestmark  # NOQA F401
 
 
 @pytest.fixture
@@ -39,19 +40,21 @@ async def test_cli_parser(cli: UnCli, buf: StringIO):
     await cli.run(argv, buf)
     assert "un_yaml" in buf.getvalue()
 
+
 async def test_cli_run(cli: UnCli, buf: StringIO):
     # assert not await cli.run(None, buf) FAILS when using pytest arguments
     assert not await cli.run([], buf)
     await cli.run(["list", TEST_URI], buf)
     assert "list" in buf.getvalue()
 
-@pytest.mark.skipif(platform.startswith('win'), reason="tmp folder name issue")
+
+@pytest.mark.skipif(sys.platform.startswith('win'), reason="tmp folder name issue")
 def test_cli_conf():
     uri = UnUri(TEST_URI)
     tool = uri.tool()
     argv = {
-       UnUri.ARG_URI: uri,
-       "name": "test",       
+        UnUri.ARG_URI: uri,
+        "name": "test",
     }
     with TemporaryDirectory() as tmpdir:
         cli = UnCli(dir=tmpdir)
@@ -74,6 +77,3 @@ def test_cli_conf():
         args = opts.get(TEST_URI)
         assert args
         assert args["name"] == "test"
-
-
-

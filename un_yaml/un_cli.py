@@ -12,7 +12,6 @@ from .un_conf import UnConf
 from .un_uri import UnUri
 from .un_yaml import UnYaml
 
-
 # Harcode most parameters for now
 # TODO: infer them from the YAML file
 
@@ -32,7 +31,7 @@ class UnCli(UnYaml):
         kwargs["type"] = eval(kwargs["type"]) if "type" in kwargs else str
         return kwargs
 
-    def __init__(self, file=CLI_YAML, dir='.') -> None:
+    def __init__(self, file=CLI_YAML, dir=".") -> None:
         yaml_data = UnYaml.LoadYaml(file, "tests")
         super().__init__(yaml_data)
         if UnCli.CMD not in self.data:
