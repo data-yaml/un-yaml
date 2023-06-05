@@ -18,7 +18,8 @@ class UnCli(UnYaml):
     """Use UnYaml to create a CLI from a YAML file."""
 
     CLI_YAML = "cli.yaml"
-    CMD = "commands"
+    CMD = "command"
+    CMDS = CMD+"s"
     ARG_KEYS = (
         "dest,metavar,type,default,required,choices,action,nargs,const,help".split(",")
     )
@@ -33,9 +34,9 @@ class UnCli(UnYaml):
     def __init__(self, pkg: str, file=CLI_YAML, dir=".") -> None:
         yaml_data = UnYaml.LoadYaml(file, pkg)
         super().__init__(yaml_data)
-        if UnCli.CMD not in self.data:
-            raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.data}")
-        self.cmds = self.get(UnCli.CMD)
+        if UnCli.CMDS not in self.data:
+            raise ValueError(f"'{UnCli.CMDS}' not in file '{file}':\n{self.data}")
+        self.cmds = self.get(UnCli.CMDS)
         self.doc = self.get_handler("doc")()
         self.path = Path(dir) / UnCli.DEFAULT
         self.conf = UnConf(self.path, doc=type(self.doc).__name__)

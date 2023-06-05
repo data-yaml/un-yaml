@@ -20,7 +20,7 @@ def buf():
 
 def test_cli(cli: UnCli):
     assert cli
-    commands = cli.get(UnCli.CMD)
+    commands = cli.get(UnCli.CMDS)
     assert commands
     assert "list" in commands
 
