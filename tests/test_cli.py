@@ -45,6 +45,11 @@ async def test_cli_run(cli: UnCli, buf: StringIO):
     assert not await cli.run([], buf)
     await cli.run(["list", TEST_URI], buf)
     assert "list" in buf.getvalue()
+    doc_opts = cli.conf.get('doc')
+    assert doc_opts
+    uri_opts = doc_opts.get(TEST_URI)
+    assert uri_opts
+    assert uri_opts.get(UnCli.CMD) == "list"
 
 
 @pytest.mark.skipif(sys.platform.startswith('win'), reason="tmp folder name issue")
@@ -54,6 +59,7 @@ def test_cli_conf():
     argv = {
         UnUri.ARG_URI: uri,
         "name": "test",
+        UnCli.CMD: "list",
     }
     with TemporaryDirectory() as tmpdir:
         cli = UnCli(pkg=SRC_PACKAGE, dir=tmpdir)
@@ -76,3 +82,5 @@ def test_cli_conf():
         args = opts.get(TEST_URI)
         assert args
         assert args["name"] == "test"
+        assert args.get(UnUri.ARG_URI, False) == False
+        assert args.get(UnCli.CMD) == "list"
