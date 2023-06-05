@@ -1,16 +1,14 @@
 import logging
 from argparse import ArgumentParser, Namespace
 from collections.abc import Sequence
-from importlib.metadata import version
 from pathlib import Path  # NOQA F401
 from sys import stdout
 from typing import Any
 
-__version__: str = version("un_yaml")
 
 from .un_conf import UnConf
 from .un_uri import UnUri
-from .un_yaml import UnYaml
+from .un_yaml import UnYaml, __version__
 
 # Harcode most parameters for now
 # TODO: infer them from the YAML file
@@ -44,7 +42,6 @@ class UnCli(UnYaml):
 
     def parse_version(self, parser: ArgumentParser) -> None:
         doc_name = self.info("doc")
-        __version__ = version(doc_name)
         parser.add_argument(
             "-v",
             f"--{UnCli.K_VER}",
