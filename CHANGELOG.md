@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## 0.2.1 (2023-06-05)
+
+- cleanup data.yaml keys
+
 ## 0.2.0 (2023-06-01)
 
 - UnConf for writeable yaml files: New, put, save

@@ -24,6 +24,7 @@ class UnCli(UnYaml):
     ARG_KEYS = (
         "dest,metavar,type,default,required,choices,action,nargs,const,help".split(",")
     )
+    K_VER = "version"
 
     @staticmethod
     def ARG_KWS(arg: dict):
@@ -46,7 +47,7 @@ class UnCli(UnYaml):
         __version__ = version(doc_name)
         parser.add_argument(
             "-v",
-            "--version",
+            f"--{UnCli.K_VER}",
             action="store_const",
             const=f"{doc_name} {__version__}",
             help="Show version and exit.",
@@ -68,7 +69,7 @@ class UnCli(UnYaml):
         args: Any = self.parse(argv)
         if not args:
             return False
-        if hasattr(args, "version") and args.version:
+        if hasattr(args, UnCli.K_VER) and args.version:
             print(args.version, file=out)
             return False
         return await self.execute(args, out)
@@ -87,9 +88,11 @@ class UnCli(UnYaml):
         return handler(uri.attrs)
 
     def log_resource(self, argv: dict):
-        uri = argv[UnUri.ARG_URI]
+        args = argv.copy()
+        args.pop(UnCli.K_VER, None)
+        uri = args.pop(UnUri.ARG_URI)
         tool = uri.tool()
-        opts = {str(uri): argv}
+        opts = {str(uri): args}
         logging.debug(f"tool[{tool}] {opts}")
         self.conf.put(tool, opts)
         self.conf.save()
