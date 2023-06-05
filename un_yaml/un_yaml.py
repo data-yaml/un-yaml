@@ -13,17 +13,6 @@ class UnYaml:
     PREFIX = "#/"
     REF = "$ref"
     REF_ERROR = f"Value for Key {REF} does not start with {PREFIX}"
-
-    @staticmethod
-    def LoadYaml(filename: str, pkg: str, sub: str = "") -> dict:
-        yaml_dir = resources.files(pkg)
-        if len(sub) > 0:
-            yaml_dir = yaml_dir / sub
-        yaml_file = yaml_dir / filename
-        yaml_string = yaml_file.read_text()
-        yaml_data = safe_load(yaml_string)
-        return yaml_data
-
     DEFAULT = "data.yaml"
     DEFAULT_INFO = {
         "_version": __version__,
@@ -32,6 +21,16 @@ class UnYaml:
         "doc": __name__,
         "doc_version": "0.0.1",
     }
+
+    @classmethod
+    def LoadYaml(cls, filename: str, pkg: str, sub: str = "") -> dict:
+        yaml_dir = resources.files(pkg)
+        if len(sub) > 0:
+            yaml_dir = yaml_dir / sub
+        yaml_file = yaml_dir / filename
+        yaml_string = yaml_file.read_text()
+        yaml_data = safe_load(yaml_string)
+        return yaml_data
 
     @classmethod
     def NewYaml(cls, info={}) -> dict:

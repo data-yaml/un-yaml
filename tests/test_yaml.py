@@ -2,16 +2,16 @@ from contextlib import nullcontext as does_not_raise
 
 from un_yaml import UnCli, UnYaml
 
-from .conftest import pytest, pytestmark  # NOQA F401
+from .conftest import SRC_PACKAGE, pytest, pytestmark  # NOQA F401
 
 
 @pytest.fixture
 def un():
-    return UnCli()
+    return UnCli(SRC_PACKAGE)
 
 
 def test_yaml_load():
-    yaml_data = UnYaml.LoadYaml(UnCli.CLI_YAML, "tests")
+    yaml_data = UnYaml.LoadYaml(UnCli.CLI_YAML, SRC_PACKAGE)
     assert yaml_data
     assert UnYaml.KEY in yaml_data
     un = UnYaml(yaml_data)

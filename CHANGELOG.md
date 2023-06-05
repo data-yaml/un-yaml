@@ -1,8 +1,9 @@
 # CHANGELOG.md
 
-## 0.2.1 (2023-06-05)
+## 0.3.0 (2023-06-05)
 
 - cleanup data.yaml keys
+- require package name for UnCli
 
 ## 0.2.0 (2023-06-01)
 

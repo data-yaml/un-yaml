@@ -30,14 +30,14 @@ class UnCli(UnYaml):
         kwargs["type"] = eval(kwargs["type"]) if "type" in kwargs else str
         return kwargs
 
-    def __init__(self, file=CLI_YAML, dir=".") -> None:
-        yaml_data = UnYaml.LoadYaml(file, "tests")
+    def __init__(self, pkg: str, file=CLI_YAML, dir=".") -> None:
+        yaml_data = UnYaml.LoadYaml(file, pkg)
         super().__init__(yaml_data)
         if UnCli.CMD not in self.data:
             raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.data}")
         self.cmds = self.get(UnCli.CMD)
         self.doc = self.get_handler("doc")()
-        self.path = Path(dir) / UnConf.DEFAULT
+        self.path = Path(dir) / UnCli.DEFAULT
         self.conf = UnConf(self.path, doc=type(self.doc).__name__)
 
     def parse_version(self, parser: ArgumentParser) -> None:
