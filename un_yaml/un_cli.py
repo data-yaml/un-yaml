@@ -1,16 +1,14 @@
 import logging
 from argparse import ArgumentParser, Namespace
 from collections.abc import Sequence
-from importlib.metadata import version
 from pathlib import Path  # NOQA F401
 from sys import stdout
 from typing import Any
 
-__version__: str = version("un_yaml")
 
 from .un_conf import UnConf
 from .un_uri import UnUri
-from .un_yaml import UnYaml
+from .un_yaml import UnYaml, __version__
 
 # Harcode most parameters for now
 # TODO: infer them from the YAML file
@@ -24,6 +22,7 @@ class UnCli(UnYaml):
     ARG_KEYS = (
         "dest,metavar,type,default,required,choices,action,nargs,const,help".split(",")
     )
+    K_VER = "version"
 
     @staticmethod
     def ARG_KWS(arg: dict):
@@ -31,22 +30,21 @@ class UnCli(UnYaml):
         kwargs["type"] = eval(kwargs["type"]) if "type" in kwargs else str
         return kwargs
 
-    def __init__(self, file=CLI_YAML, dir=".") -> None:
-        yaml_data = UnYaml.LoadYaml(file, "tests")
+    def __init__(self, pkg: str, file=CLI_YAML, dir=".") -> None:
+        yaml_data = UnYaml.LoadYaml(file, pkg)
         super().__init__(yaml_data)
         if UnCli.CMD not in self.data:
             raise ValueError(f"'{UnCli.CMD}' not in file '{file}':\n{self.data}")
         self.cmds = self.get(UnCli.CMD)
         self.doc = self.get_handler("doc")()
-        self.path = Path(dir) / UnConf.DEFAULT
+        self.path = Path(dir) / UnCli.DEFAULT
         self.conf = UnConf(self.path, doc=type(self.doc).__name__)
 
     def parse_version(self, parser: ArgumentParser) -> None:
         doc_name = self.info("doc")
-        __version__ = version(doc_name)
         parser.add_argument(
             "-v",
-            "--version",
+            f"--{UnCli.K_VER}",
             action="store_const",
             const=f"{doc_name} {__version__}",
             help="Show version and exit.",
@@ -68,7 +66,7 @@ class UnCli(UnYaml):
         args: Any = self.parse(argv)
         if not args:
             return False
-        if hasattr(args, "version") and args.version:
+        if hasattr(args, UnCli.K_VER) and args.version:
             print(args.version, file=out)
             return False
         return await self.execute(args, out)
@@ -87,9 +85,11 @@ class UnCli(UnYaml):
         return handler(uri.attrs)
 
     def log_resource(self, argv: dict):
-        uri = argv[UnUri.ARG_URI]
+        args = argv.copy()
+        args.pop(UnCli.K_VER, None)
+        uri = args.pop(UnUri.ARG_URI)
         tool = uri.tool()
-        opts = {str(uri): argv}
+        opts = {str(uri): args}
         logging.debug(f"tool[{tool}] {opts}")
         self.conf.put(tool, opts)
         self.conf.save()

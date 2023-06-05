@@ -1,8 +1,11 @@
 from importlib import import_module, resources
+from importlib.metadata import version
 from typing import Any, Callable
+from pathlib import Path
 
 from yaml import safe_load
 
+__version__: str = version("un_yaml")
 
 class UnYaml:
     KEY = "_yaml"
@@ -10,15 +13,40 @@ class UnYaml:
     PREFIX = "#/"
     REF = "$ref"
     REF_ERROR = f"Value for Key {REF} does not start with {PREFIX}"
+    DEFAULT = "data.yaml"
+    DEFAULT_INFO = {
+        "_version": __version__,
+        "app": "data-yaml",
+        "app_version": "0.0.1",
+        "doc": __name__,
+        "doc_version": "0.0.1",
+    }
 
-    @staticmethod
-    def LoadYaml(filename: str, pkg: str, sub: str = "") -> dict:
+    @classmethod
+    def LoadYaml(cls, filename: str, pkg: str, sub: str = "") -> dict:
         yaml_dir = resources.files(pkg)
         if len(sub) > 0:
             yaml_dir = yaml_dir / sub
         yaml_file = yaml_dir / filename
         yaml_string = yaml_file.read_text()
         yaml_data = safe_load(yaml_string)
+        return yaml_data
+
+    @classmethod
+    def NewYaml(cls, info={}) -> dict:
+        opts = UnYaml.DEFAULT_INFO | {"doc": cls.__name__} | info
+        yaml_data = {UnYaml.KEY: opts}
+        return yaml_data
+
+    @classmethod
+    def ReadYaml(cls, path: Path, defaults={}) -> dict:
+        if not path.exists():
+            return cls.NewYaml(defaults)
+        yaml_string = path.read_text()
+        yaml_data = safe_load(yaml_string)
+
+        if not yaml_data:
+            return cls.NewYaml(defaults)
         return yaml_data
 
     def __init__(self, yaml_data: dict) -> None:

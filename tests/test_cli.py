@@ -4,12 +4,11 @@ from tempfile import TemporaryDirectory
 
 from un_yaml import UnCli, UnUri
 
-from .conftest import TEST_URI, pytest, pytestmark  # NOQA F401
-
+from .conftest import SRC_PACKAGE, TEST_URI, pytest, pytestmark  # NOQA F401
 
 @pytest.fixture
 def cli():
-    return UnCli()
+    return UnCli(SRC_PACKAGE)
 
 
 @pytest.fixture
@@ -57,7 +56,7 @@ def test_cli_conf():
         "name": "test",
     }
     with TemporaryDirectory() as tmpdir:
-        cli = UnCli(dir=tmpdir)
+        cli = UnCli(pkg=SRC_PACKAGE, dir=tmpdir)
         cf = cli.conf
         assert cf
         assert tmpdir in str(cli.path)
