@@ -8,7 +8,7 @@ from typing import Any
 
 from .un_conf import UnConf
 from .un_uri import UnUri
-from .un_yaml import UnYaml, __version__
+from .un_yaml import UnYaml
 
 # Harcode most parameters for now
 # TODO: infer them from the YAML file
@@ -31,11 +31,12 @@ class UnCli(UnYaml):
         kwargs["type"] = eval(kwargs["type"]) if "type" in kwargs else str
         return kwargs
 
-    def __init__(self, pkg: str, file=CLI_YAML, dir=".") -> None:
+    def __init__(self, pkg: str, version: str, file=CLI_YAML, dir=".") -> None:
         yaml_data = UnYaml.LoadYaml(file, pkg)
         super().__init__(yaml_data)
         if UnCli.CMDS not in self.data:
             raise ValueError(f"'{UnCli.CMDS}' not in file '{file}':\n{self.data}")
+        self.version = version
         self.cmds = self.get(UnCli.CMDS)
         self.doc = self.get_handler("doc")()
         self.path = Path(dir) / UnCli.DEFAULT
@@ -44,10 +45,10 @@ class UnCli(UnYaml):
     def parse_version(self, parser: ArgumentParser) -> None:
         doc_name = self.info("doc")
         parser.add_argument(
-            "-v",
+            "-V",
             f"--{UnCli.K_VER}",
             action="store_const",
-            const=f"{doc_name} {__version__}",
+            const=f"{doc_name} {self.version}",
             help="Show version and exit.",
         )
 

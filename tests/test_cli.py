@@ -2,13 +2,13 @@ import sys
 from io import StringIO
 from tempfile import TemporaryDirectory
 
-from un_yaml import UnCli, UnUri
+from un_yaml import UnCli, UnUri, __version__
 
 from .conftest import SRC_PACKAGE, TEST_URI, pytest, pytestmark  # NOQA F401
 
 @pytest.fixture
 def cli():
-    return UnCli(SRC_PACKAGE)
+    return UnCli(SRC_PACKAGE, __version__)
 
 
 @pytest.fixture
@@ -62,7 +62,7 @@ def test_cli_conf():
         UnCli.CMD: "list",
     }
     with TemporaryDirectory() as tmpdir:
-        cli = UnCli(pkg=SRC_PACKAGE, dir=tmpdir)
+        cli = UnCli(pkg=SRC_PACKAGE, dir=tmpdir, version=__version__)
         cf = cli.conf
         assert cf
         assert tmpdir in str(cli.path)
