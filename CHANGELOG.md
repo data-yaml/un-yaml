@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 0.3.1 (2023-06-05a)
+
+- fix version
+- test command passing
+
 ## 0.3.0 (2023-06-05)
 
 - cleanup data.yaml keys
