@@ -1,13 +1,13 @@
 from contextlib import nullcontext as does_not_raise
 
-from un_yaml import UnCli, UnYaml
+from un_yaml import UnCli, UnYaml, __version__
 
 from .conftest import SRC_PACKAGE, pytest, pytestmark  # NOQA F401
 
 
 @pytest.fixture
 def un():
-    return UnCli(SRC_PACKAGE)
+    return UnCli(SRC_PACKAGE, __version__)
 
 
 def test_yaml_load():

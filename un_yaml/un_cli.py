@@ -88,7 +88,7 @@ class UnCli(UnYaml):
 
     def log_resource(self, argv: dict):
         args = argv.copy()
-        args.pop(UnCli.K_VER, None)
+        args[UnCli.K_VER] = self.version
         uri = args.pop(UnUri.ARG_URI)
         tool = uri.tool()
         opts = {str(uri): args}
