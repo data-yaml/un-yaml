@@ -27,7 +27,7 @@ class UnCli(UnYaml):
     K_VER = "version"
 
     @staticmethod
-    def ARG_KWS(arg: dict):
+    def VALID_KEYS(arg: dict):
         kwargs = {k: v for k, v in arg.items() if k in UnCli.ARG_KEYS}
         kwargs["type"] = eval(kwargs["type"]) if "type" in kwargs else str
         return kwargs
@@ -60,9 +60,10 @@ class UnCli(UnYaml):
         for cmd, opts in self.cmds.items():
             if cmd[0] != "_":
                 subparser = subparsers.add_parser(cmd, help=opts["help"])
-                args = opts.get(UnCli.K_ARG)
-                for arg in args or []:
-                    subparser.add_argument(arg["name"], **UnCli.ARG_KWS(arg))
+                for arg in opts.get(UnCli.K_ARG) or []:
+                    subparser.add_argument(arg["name"], **UnCli.VALID_KEYS(arg))
+                for opt in opts.get(UnCli.K_OPT) or []:
+                    subparser.add_argument(opt["name"], **UnCli.VALID_KEYS(opt))
         return parser
 
     async def run(self, argv: Sequence[str] | None, out=stdout):

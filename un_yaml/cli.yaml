@@ -33,6 +33,7 @@ variable:
     short: "-d"
     help: Local directory
     type: Path
+    default: "."
   uri:
     name: uri
     help: URI of resource to list

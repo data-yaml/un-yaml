@@ -1,5 +1,8 @@
 import sys
+
+from argparse import Namespace
 from io import StringIO
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from un_yaml import UnCli, UnUri, __version__
@@ -27,7 +30,7 @@ def test_cli(cli: UnCli):
 
 def test_cli_arg():
     d = {"type": "Path"}
-    kw = UnCli.ARG_KWS(d)
+    kw = UnCli.VALID_KEYS(d)
     assert kw
 
 
@@ -39,6 +42,23 @@ async def test_cli_parser(cli: UnCli, buf: StringIO):
     await cli.run(argv, buf)
     assert "un_yaml" in buf.getvalue()
 
+
+def test_cli_parse_arg(cli: UnCli):
+    argv = ["list", TEST_URI]
+    names = cli.parse(argv)
+    assert isinstance(names, Namespace)
+    assert names.command == "list"
+    uri = names.uri
+    assert isinstance(uri, UnUri)
+    assert str(uri) == TEST_URI
+
+def test_cli_parse_opt(cli: UnCli):
+    argv = ["get", TEST_URI] # , "--dir", "."
+    names = cli.parse(argv)
+    assert isinstance(names, Namespace)
+    assert names.command == "get"
+    assert hasattr(names, "dir")
+    assert names.dir == Path(".")
 
 async def test_cli_run(cli: UnCli, buf: StringIO):
     # assert not await cli.run(None, buf) FAILS when using pytest arguments
