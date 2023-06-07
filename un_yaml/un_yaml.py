@@ -9,6 +9,7 @@ __version__: str = version("un_yaml")
 
 class UnYaml:
     KEY = "_yaml"
+    K_HANDLER = "handler"
     SEP = "/"
     PREFIX = "#/"
     REF = "$ref"
@@ -92,7 +93,7 @@ class UnYaml:
         return result
 
     def get_handler(self, key: str) -> Callable:
-        handlers = self.info("handlers")
+        handlers = self.info(UnYaml.K_HANDLER)
         handler = handlers.get(key)
         if not handler:
             raise ValueError(f"UnYaml.get_handler: no handler for {key}")

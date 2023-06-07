@@ -18,11 +18,12 @@ class UnCli(UnYaml):
     """Use UnYaml to create a CLI from a YAML file."""
 
     CLI_YAML = "cli.yaml"
-    CMD = "command"
-    CMDS = CMD+"s"
     ARG_KEYS = (
         "dest,metavar,type,default,required,choices,action,nargs,const,help".split(",")
     )
+    K_ARG = "argument"
+    K_CMD = "command"
+    K_OPT = "option"
     K_VER = "version"
 
     @staticmethod
@@ -34,10 +35,10 @@ class UnCli(UnYaml):
     def __init__(self, pkg: str, version: str, file=CLI_YAML, dir=".") -> None:
         yaml_data = UnYaml.LoadYaml(file, pkg)
         super().__init__(yaml_data)
-        if UnCli.CMDS not in self.data:
-            raise ValueError(f"'{UnCli.CMDS}' not in file '{file}':\n{self.data}")
+        if UnCli.K_CMD not in self.data:
+            raise ValueError(f"'{UnCli.K_CMD}' not in file '{file}':\n{self.data}")
         self.version = version
-        self.cmds = self.get(UnCli.CMDS)
+        self.cmds = self.get(UnCli.K_CMD)
         self.doc = self.get_handler("doc")()
         self.path = Path(dir) / UnCli.DEFAULT
         self.conf = UnConf(self.path, doc=type(self.doc).__name__)
@@ -53,13 +54,13 @@ class UnCli(UnYaml):
         )
 
     def make_parser(self) -> ArgumentParser:
-        parser = ArgumentParser(self.get("doc"))
+        parser = ArgumentParser(self.info("doc"))
         self.parse_version(parser)
-        subparsers = parser.add_subparsers(dest="command")
+        subparsers = parser.add_subparsers(dest=UnCli.K_CMD)
         for cmd, opts in self.cmds.items():
             if cmd[0] != "_":
                 subparser = subparsers.add_parser(cmd, help=opts["help"])
-                args = opts.get("arguments")
+                args = opts.get(UnCli.K_ARG)
                 for arg in args or []:
                     subparser.add_argument(arg["name"], **UnCli.ARG_KWS(arg))
         return parser

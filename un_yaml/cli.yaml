@@ -4,7 +4,7 @@ _yaml:
   app_version: 0.2.0
   doc: un_yaml
   doc_version: 0.1.0
-  handlers:
+  handler:
     doc:
       module: un_yaml.wrapper
       method: Wrapper
@@ -12,22 +12,25 @@ _yaml:
       module: self
       method: get_resource
       key: _resource
-argsets:
+argset:
   remote:
-    arguments:
-      - $ref: "#/variables/dir"
-      - $ref: "#/variables/uri"
-commands:
+    argument:
+      - $ref: "#/variable/uri"
+    option:
+      - $ref: "#/variable/dir"
+
+command:
   list:
-    arguments:
-      - $ref: "#/variables/uri"
+    argument:
+      - $ref: "#/variable/uri"
     help: List members of a resource
   get:
-    $ref: "#/argsets/remote"
+    $ref: "#/argset/remote"
     help: Get contents of remote URI into directory (and gitignore it)
-variables:
+variable:
   dir:
-    name: dir
+    name: "--dir"
+    short: "-d"
     help: Local directory
     type: Path
   uri:
