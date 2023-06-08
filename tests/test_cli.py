@@ -52,6 +52,7 @@ def test_cli_parse_arg(cli: UnCli):
     assert isinstance(uri, UnUri)
     assert str(uri) == TEST_URI
 
+
 def test_cli_parse_opt(cli: UnCli):
     argv = ["get", TEST_URI] # , "--dir", "."
     names = cli.parse(argv)
@@ -59,6 +60,15 @@ def test_cli_parse_opt(cli: UnCli):
     assert names.command == "get"
     assert hasattr(names, "dir")
     assert names.dir == Path(".")
+    assert not names.verbose
+
+
+async def test_cli_verbose(cli: UnCli, buf: StringIO):
+    argv = ["get", TEST_URI, "--verbose"] # , "--dir", "."
+    names = cli.parse(argv)
+    assert isinstance(names, Namespace)
+    assert names.verbose
+
 
 async def test_cli_run(cli: UnCli, buf: StringIO):
     # assert not await cli.run(None, buf) FAILS when using pytest arguments
