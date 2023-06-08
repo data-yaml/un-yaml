@@ -29,7 +29,8 @@ class UnCli(UnYaml):
     @staticmethod
     def VALID_KEYS(arg: dict):
         kwargs = {k: v for k, v in arg.items() if k in UnCli.ARG_KEYS}
-        kwargs["type"] = eval(kwargs["type"]) if "type" in kwargs else str
+        if "type" in kwargs:
+            kwargs["type"] = eval(kwargs["type"])
         return kwargs
 
     def __init__(self, pkg: str, version: str, file=CLI_YAML, dir=".") -> None:
@@ -63,7 +64,7 @@ class UnCli(UnYaml):
                 for arg in opts.get(UnCli.K_ARG) or []:
                     subparser.add_argument(arg["name"], **UnCli.VALID_KEYS(arg))
                 for opt in opts.get(UnCli.K_OPT) or []:
-                    subparser.add_argument(opt["name"], **UnCli.VALID_KEYS(opt))
+                    subparser.add_argument(opt["short"], opt["name"], **UnCli.VALID_KEYS(opt))
         return parser
 
     async def run(self, argv: Sequence[str] | None, out=stdout):

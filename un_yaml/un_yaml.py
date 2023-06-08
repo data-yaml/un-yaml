@@ -14,6 +14,8 @@ class UnYaml:
     PREFIX = "#/"
     REF = "$ref"
     REF_ERROR = f"Value for Key {REF} does not start with {PREFIX}"
+    VAL_ERROR = f"Value for Key {REF} not deferencable"
+
     DEFAULT = "data.yaml"
     DEFAULT_INFO = {
         "_version": __version__,
@@ -72,6 +74,8 @@ class UnYaml:
         if not ref.startswith(UnYaml.PREFIX):
             raise ValueError(f"cannot expand {ref}: {UnYaml.REF_ERROR}")
         value = self.get(ref[2:])
+        if not value:
+            raise ValueError(f"cannot get {ref}: {UnYaml.VAL_ERROR}")
         for key in item:
             if key != UnYaml.REF:
                 value[key] = item[key]
