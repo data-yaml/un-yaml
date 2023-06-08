@@ -3,33 +3,117 @@ _yaml:
   app: UnCli
   app_version: 0.2.0
   doc: un_yaml
-  doc_version: 0.1.0
-  handlers:
+  doc_version: 0.2.0
+  handler:
     doc:
       module: un_yaml.wrapper
       method: Wrapper
+    quilt:
+      module: udc.quilt.resource
+      method: QuiltResource
+    benchling:
+      module: udc.benchling.resource
+      method: BenchlingResource
     uri:
       module: self
       method: get_resource
       key: _resource
-argsets:
+argset:
   remote:
-    arguments:
-      - $ref: "#/variables/dir"
-      - $ref: "#/variables/uri"
-commands:
+    argument:
+      - $ref: "#/variable/uri"
+    option:
+      - $ref: "#/variable/nocopy"
+      - $ref: "#/variable/dir"
+  push:
+    argument:
+      - $ref: "#/variable/uri"
+    option:
+      - $ref: "#/variable/nocopy"
+      - $ref: "#/variable/dir"
+      - $ref: "#/variable/file"
+      - $ref: "#/variable/fallible"
+  stage:
+    argument:
+      - $ref: "#/variable/local"
+    option:
+      - $ref: "#/variable/sub_path"
+command:
   list:
-    arguments:
-      - $ref: "#/variables/uri"
+    argument:
+      - $ref: "#/variable/uri"
     help: List members of a resource
   get:
-    $ref: "#/argsets/remote"
+    $ref: "#/argset/remote"
     help: Get contents of remote URI into directory (and gitignore it)
-variables:
+  put:
+    $ref: "#/argset/push"
+    help: Put commited contents from directory to remote URI (replace)
+  patch:
+    $ref: "#/argset/push"
+    help: Patch commited contents from directory into latest remote URI (update)
+  diff:
+    help: Show diff of directory contents versus last install/push
+    argument:
+      - $ref: "#/variable/uri"
+    option:
+      - $ref: "#/variable/dir"
+global:
+  verbose:
+    name: "--verbose"
+    short: "-v"
+    help: Display verbose version of output
+    action: store_true
+    default: False
+variable:
+  all:
+    name: "--all"
+    short: "-a"
+    help: Automatically add/perform all changes
+    action: store_true
+  body:
+    name: "--body-file"
+    short: "-b"
+    help: Filename (usually JSON/YAML) to use as body of request (typically for metadata)
+    type: Path
   dir:
-    name: dir
+    name: "--dir"
+    short: "-d"
     help: Local directory
     type: Path
+    default: "."
+  file:
+    name: "--file"
+    short: "-f"
+    help: Local file
+    type: Path
+    nargs: "*"
+    action: append
+  fallible:
+    name: "--fallible"
+    short: "-F"
+    help: Fail if remote repository is out of date
+    action: store_true
+  local:
+    name: local
+    help: Local file
+    type: Path
+  msg:
+    name: "--msg"
+    short: "-m"
+    help: Commit message explaining changes
+    type: str
+  nocopy:
+    name: "--no-copy"
+    short: "-n"
+    help: Do not copy S3 objects (use references where possible)
+    action: store_true
+  sub_path:
+    name: "--sub_path"
+    short: "-s"
+    help: "Remote relative, logical sub_path to store objects in"
+    type: str
+    format: sub_path
   uri:
     name: uri
     help: URI of resource to list

@@ -1,14 +1,17 @@
 import sys
+from argparse import Namespace
 from io import StringIO
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from un_yaml import UnCli, UnUri
+from un_yaml import UnCli, UnUri, __version__
 
 from .conftest import SRC_PACKAGE, TEST_URI, pytest, pytestmark  # NOQA F401
 
+
 @pytest.fixture
 def cli():
-    return UnCli(SRC_PACKAGE)
+    return UnCli(SRC_PACKAGE, __version__)
 
 
 @pytest.fixture
@@ -20,14 +23,14 @@ def buf():
 
 def test_cli(cli: UnCli):
     assert cli
-    commands = cli.get(UnCli.CMD)
+    commands = cli.get(UnCli.K_CMD)
     assert commands
     assert "list" in commands
 
 
 def test_cli_arg():
     d = {"type": "Path"}
-    kw = UnCli.ARG_KWS(d)
+    kw = UnCli.VALID_KEYS(d)
     assert kw
 
 
@@ -40,23 +43,56 @@ async def test_cli_parser(cli: UnCli, buf: StringIO):
     assert "un_yaml" in buf.getvalue()
 
 
+def test_cli_parse_arg(cli: UnCli):
+    argv = ["list", TEST_URI]
+    names = cli.parse(argv)
+    assert isinstance(names, Namespace)
+    assert names.command == "list"
+    uri = names.uri
+    assert isinstance(uri, UnUri)
+    assert str(uri) == TEST_URI
+
+
+def test_cli_parse_opt(cli: UnCli):
+    argv = ["get", TEST_URI]  # , "--dir", "."
+    names = cli.parse(argv)
+    assert isinstance(names, Namespace)
+    assert names.command == "get"
+    assert hasattr(names, "dir")
+    assert names.dir == Path(".")
+    assert not names.verbose
+
+
+async def test_cli_verbose(cli: UnCli, buf: StringIO):
+    argv = ["get", TEST_URI, "--verbose"]  # , "--dir", "."
+    names = cli.parse(argv)
+    assert isinstance(names, Namespace)
+    assert names.verbose
+
+
 async def test_cli_run(cli: UnCli, buf: StringIO):
     # assert not await cli.run(None, buf) FAILS when using pytest arguments
     assert not await cli.run([], buf)
     await cli.run(["list", TEST_URI], buf)
     assert "list" in buf.getvalue()
+    doc_opts = cli.conf.get("doc")
+    assert doc_opts
+    uri_opts = doc_opts.get(TEST_URI)
+    assert uri_opts
+    assert uri_opts.get(UnCli.K_CMD) == "list"
 
 
-@pytest.mark.skipif(sys.platform.startswith('win'), reason="tmp folder name issue")
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="tmp folder name issue")
 def test_cli_conf():
     uri = UnUri(TEST_URI)
     tool = uri.tool()
     argv = {
         UnUri.ARG_URI: uri,
         "name": "test",
+        UnCli.K_CMD: "list",
     }
     with TemporaryDirectory() as tmpdir:
-        cli = UnCli(pkg=SRC_PACKAGE, dir=tmpdir)
+        cli = UnCli(pkg=SRC_PACKAGE, dir=tmpdir, version=__version__)
         cf = cli.conf
         assert cf
         assert tmpdir in str(cli.path)
@@ -76,3 +112,5 @@ def test_cli_conf():
         args = opts.get(TEST_URI)
         assert args
         assert args["name"] == "test"
+        assert args.get(UnUri.ARG_URI, False) is False
+        assert args.get(UnCli.K_CMD) == "list"

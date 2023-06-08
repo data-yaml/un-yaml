@@ -1,13 +1,13 @@
 from contextlib import nullcontext as does_not_raise
 
-from un_yaml import UnCli, UnYaml
+from un_yaml import UnCli, UnYaml, __version__
 
 from .conftest import SRC_PACKAGE, pytest, pytestmark  # NOQA F401
 
 
 @pytest.fixture
 def un():
-    return UnCli(SRC_PACKAGE)
+    return UnCli(SRC_PACKAGE, __version__)
 
 
 def test_yaml_load():
@@ -33,28 +33,29 @@ def test_yaml_expand(un: UnYaml):
     assert obj == un.expand(obj)
     literal = {"key": "value"}
     assert literal == un.expand(literal)
-    ref = {UnYaml.REF: "#/variables/uri"}
-    assert un.data["variables"]["uri"] == un.expand(ref)
+    ref = {UnYaml.REF: "#/variable/uri"}
+    assert un.data["variable"]["uri"] == un.expand(ref)
 
 
 def test_yaml_get(un: UnYaml):
     assert un.get(UnYaml.KEY)
     assert not un.get("cmd/list")
-    assert un.get("commands/list")
-    assert un.get("commands/list/arguments")
-    arg0 = un.get("commands/list/arguments/0")
+    assert un.get("command/list")
+    assert un.get("command/list/argument")
+    arg0 = un.get("command/list/argument/0")
     assert isinstance(arg0, dict)
     assert "uri" == arg0.get("name")
 
 
 def test_yaml_re_expand(un: UnYaml):
-    getref = un.get("commands/get")
+    getref = un.get("command/get")
     assert "help" in getref
-    assert "arguments" in getref
-    args = getref["arguments"]
-    dir = args[0]
-    assert "name" in dir
-    assert dir["type"] == "Path"
+    assert "argument" in getref
+    args = getref["argument"]
+    uri_opts = args[0]
+    assert "name" in uri_opts
+    assert uri_opts["name"] == "uri"
+    assert uri_opts["type"] == "UnUri"
 
 
 def test_yaml_get_handler(un: UnYaml):

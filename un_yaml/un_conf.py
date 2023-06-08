@@ -2,9 +2,8 @@ import logging
 from pathlib import Path  # NOQA F401
 from typing import Any
 
-from yaml import safe_dump, safe_load
+from yaml import safe_dump
 
-from .un_yaml import __version__
 from .un_yaml import UnYaml
 
 
@@ -15,7 +14,6 @@ class UnConf(UnYaml):
     def SaveYaml(path: Path, yaml_data: dict):
         with path.open("w") as outfile:
             safe_dump(yaml_data, outfile)
-
 
     def __init__(self, path: Path, **defaults) -> None:
         yaml_data = UnConf.ReadYaml(path.resolve(), defaults)
