@@ -25,6 +25,7 @@ class UnCli(UnYaml):
     K_CMD = "command"
     K_OPT = "option"
     K_VER = "version"
+    K_VRB = "verbose"
     K_GLOB = "global"
 
     @staticmethod
@@ -77,6 +78,8 @@ class UnCli(UnYaml):
         if hasattr(args, UnCli.K_VER) and args.version:
             print(args.version, file=out)
             return False
+        if hasattr(args, UnCli.K_VRB) and args.verbose:
+            print("UnCli.run.args: {args}", file=out)
         return await self.execute(args, out)
 
     def parse(self, argv: Sequence[str] | None) -> Namespace | None:
@@ -119,6 +122,8 @@ class UnCli(UnYaml):
 
         argv = vars(args)
         self.resource(argv)
+        if argv.get(UnCli.K_VRB, False):
+            print("UnCli.run.argv: {argv}", file=out)
 
         results = await self.doc.execute(cmd, argv)
         return self.echo(results, out)

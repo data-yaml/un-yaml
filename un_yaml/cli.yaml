@@ -64,6 +64,7 @@ global:
     short: "-v"
     help: Display verbose version of output
     action: store_true
+    default: False
 variable:
   all:
     name: "--all"
