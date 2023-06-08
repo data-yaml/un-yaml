@@ -5,8 +5,6 @@ from pathlib import Path  # NOQA F401
 from sys import stdout
 from typing import Any
 
-logging.basicConfig()
-
 from .un_conf import UnConf
 from .un_uri import UnUri
 from .un_yaml import UnYaml
@@ -67,7 +65,9 @@ class UnCli(UnYaml):
                 for arg in opts.get(UnCli.K_ARG, []):
                     subparser.add_argument(arg["name"], **UnCli.VALID_KEYS(arg))
                 for opt in opts.get(UnCli.K_OPT, []):
-                    subparser.add_argument(opt["short"], opt["name"], **UnCli.VALID_KEYS(opt))
+                    subparser.add_argument(
+                        opt["short"], opt["name"], **UnCli.VALID_KEYS(opt)
+                    )
                 globs = self.get(UnCli.K_GLOB) or {}
                 for gopts in globs.values():
                     subparser.add_argument(gopts["name"], **UnCli.VALID_KEYS(gopts))
@@ -81,6 +81,7 @@ class UnCli(UnYaml):
             print(args.version, file=out)
             return False
         if hasattr(args, UnCli.K_VRB) and args.verbose:
+            logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
             print("UnCli.run.args: {args}", file=out)
         return await self.execute(args, out)

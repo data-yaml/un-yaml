@@ -1,11 +1,12 @@
 from importlib import import_module, resources
 from importlib.metadata import version
-from typing import Any, Callable
 from pathlib import Path
+from typing import Any, Callable
 
 from yaml import safe_load
 
 __version__: str = version("un_yaml")
+
 
 class UnYaml:
     KEY = "_yaml"
