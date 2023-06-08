@@ -74,7 +74,7 @@ class UnCli(UnYaml):
         return parser
 
     async def run(self, argv: Sequence[str] | None, out=stdout):
-        args: Any = self.parse(argv)
+        args = self.parse(argv)
         if not args:
             return False
         if hasattr(args, UnCli.K_VER) and args.version:
@@ -83,12 +83,12 @@ class UnCli(UnYaml):
         if hasattr(args, UnCli.K_VRB) and args.verbose:
             logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
-            print("UnCli.run.args: {args}", file=out)
         return await self.execute(args, out)
 
     def parse(self, argv: Sequence[str] | None) -> Namespace | None:
         parser = self.make_parser()
         args = parser.parse_args(argv)
+        logging.debug(f"UnCli.parse.args: {args}")
         if args.command is None and not args.version:
             parser.print_help()
             return None
@@ -96,7 +96,7 @@ class UnCli(UnYaml):
 
     def get_resource(self, uri: UnUri) -> Any:
         handler = self.get_handler(uri.tool())
-        logging.debug(f"handler: {handler}")
+        logging.debug(f"get_resource.handler: {handler}")
         return handler(uri.attrs)
 
     def log_resource(self, argv: dict):
@@ -126,8 +126,7 @@ class UnCli(UnYaml):
 
         argv = vars(args)
         self.resource(argv)
-        if argv.get(UnCli.K_VRB, False):
-            print("UnCli.run.argv: {argv}", file=out)
+        logging.debug(f"UnCli.execute.argv: {argv}")
 
         results = await self.doc.execute(cmd, argv)
         return self.echo(results, out)
