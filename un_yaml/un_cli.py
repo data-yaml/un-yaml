@@ -25,6 +25,7 @@ class UnCli(UnYaml):
     K_CMD = "command"
     K_OPT = "option"
     K_VER = "version"
+    K_GLOB = "global"
 
     @staticmethod
     def VALID_KEYS(arg: dict):
@@ -65,6 +66,8 @@ class UnCli(UnYaml):
                     subparser.add_argument(arg["name"], **UnCli.VALID_KEYS(arg))
                 for opt in opts.get(UnCli.K_OPT) or []:
                     subparser.add_argument(opt["short"], opt["name"], **UnCli.VALID_KEYS(opt))
+                for glob in opts.get(UnCli.K_GLOB) or []:
+                    subparser.add_argument(glob["name"], **UnCli.VALID_KEYS(glob))
         return parser
 
     async def run(self, argv: Sequence[str] | None, out=stdout):
