@@ -70,7 +70,11 @@ class UnCli(UnYaml):
                     )
                 globs = self.get(UnCli.K_GLOB) or {}
                 for gopts in globs.values():
-                    subparser.add_argument(gopts["name"], **UnCli.VALID_KEYS(gopts))
+                    subparser.add_argument(
+                        gopts["short"],
+                        gopts["name"],
+                        **UnCli.VALID_KEYS(gopts)
+                    )
         return parser
 
     async def run(self, argv: Sequence[str] | None, out=stdout):
