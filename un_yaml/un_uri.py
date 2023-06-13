@@ -32,6 +32,25 @@ class UnUri:
         return query
 
     def __init__(self, uri_string: str):
+        """
+        Parse a UDC "app+protocol://" URI into components
+        - parse fragment into `attrs`
+        - use special attr keys for other components
+
+        >>> uri = UnUri("udc+http://example.com?key=value#foo=bar")
+        >>> uri.attrs[UnUri.K_HOST]
+        'example.com'
+        >>> uri.attrs[UnUri.K_PROT]
+        'http'
+        >>> uri.attrs[UnUri.K_QRY]
+        {'key': 'value'}
+        >>> uri.attrs['foo']
+        'bar'
+        >>> uri.attrs[UnUri.K_TOOL]
+        'udc'
+        >>> uri.attrs[UnUri.K_URI]
+        'udc+http://example.com?key=value#foo=bar'
+        """
         self.uri = urlparse(uri_string)
         self.attrs = self.parse_query(self.uri.fragment)
         self.parse_scheme(self.uri.scheme)
