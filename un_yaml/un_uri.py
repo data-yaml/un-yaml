@@ -3,19 +3,10 @@
 from json import loads
 from typing import Any
 from urllib.parse import parse_qs, urlparse
+from .un_attr import UnAttr
 
 
-class UnUri:
-    ARG_URI = "uri"
-    ARG_RESOURCE = "resource"
-    SEP = "+"
-    K_ID = "_id"
-    K_HOST = "_hostname"
-    K_PROT = "_protocol"
-    K_UPTH = "_uri_paths"
-    K_QRY = "_query"
-    K_TOOL = "_tool"
-    K_URI = "_uri"
+class UnUri(UnAttr):
 
     @staticmethod
     def ExtractJson(result):
