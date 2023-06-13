@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 0.3.2 (2023-06-13)
+
+- new UnAttr root class (convenience)
+- add (require) short global options
+
 ## 0.3.1 (2023-06-05a)
 
 - fix version
