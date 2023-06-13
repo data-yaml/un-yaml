@@ -1,6 +1,7 @@
 # Parse a UDC "app+protocol://" URI
 from typing_extensions import Any
 
+
 class UnAttr:
     ARG_URI = "uri"
     ARG_RESOURCE = "resource"
@@ -22,4 +23,3 @@ class UnAttr:
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.attrs})"
-

@@ -1,4 +1,3 @@
-from yaml import representer
 
 from .un_attr import UnAttr  # NOQA F401
 from .un_cli import UnCli  # NOQA F401

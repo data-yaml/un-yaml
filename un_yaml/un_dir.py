@@ -1,11 +1,10 @@
 import logging
-import shutil
-
-from typing_extensions import Any
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+
 from .un_attr import UnAttr
+
 
 class UnDir(UnAttr):
     ARG_DIR = "dir"
@@ -15,6 +14,7 @@ class UnDir(UnAttr):
         Base class to set and manage local sync directory
         (starting with a temporary one).
 
+        >>> import shutil
         >>> ud = UnDir({})
         >>> hasattr(ud, "dir_path")
         True
@@ -50,6 +50,7 @@ class UnDir(UnAttr):
         """
         Return a path relative to the local sync directory.
 
+        >>> import shutil
         >>> ud = UnDir({})
         >>> sub = ud.dir("c", "d")
         >>> sub.exists()
@@ -114,7 +115,7 @@ class UnDir(UnAttr):
         """
         local_dir = args.get(UnDir.ARG_DIR)
         return self.check_dir(local_dir)
-    
+
     def write_text(self, text: str, filename: str, *paths: str) -> Path:
         """
         Write text to file in local sync directory.

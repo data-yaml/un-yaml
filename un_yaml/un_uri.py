@@ -3,11 +3,11 @@
 from json import loads
 from typing import Any
 from urllib.parse import parse_qs, urlparse
+
 from .un_attr import UnAttr
 
 
 class UnUri(UnAttr):
-
     @staticmethod
     def ExtractJson(result):
         if not isinstance(result, str) or result[0] != "{":
