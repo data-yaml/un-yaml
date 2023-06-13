@@ -70,7 +70,8 @@ class UnCli(UnYaml):
                     )
                 globs = self.get(UnCli.K_GLOB) or {}
                 for gopts in globs.values():
-                    names = filter(None, [gopts.get("short"), gopts.get("name")])
+                    nopts: list[str] = [gopts.get("short"), gopts.get("name")]
+                    names = filter(None, nopts)
                     subparser.add_argument(*names, **UnCli.VALID_KEYS(gopts))
         return parser
 
