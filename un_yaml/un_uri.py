@@ -9,6 +9,7 @@ class UnUri:
     ARG_URI = "uri"
     ARG_RESOURCE = "resource"
     SEP = "+"
+    K_ID = "_id"
     K_HOST = "_hostname"
     K_PROT = "_protocol"
     K_UPTH = "_uri_paths"
@@ -37,7 +38,7 @@ class UnUri:
         - parse fragment into `attrs`
         - use special attr keys for other components
 
-        >>> uri = UnUri("udc+http://example.com?key=value#foo=bar")
+        >>> uri = UnUri("udc+http://example.com?key=value#foo=bar&fubar=baz")
         >>> uri.attrs[UnUri.K_HOST]
         'example.com'
         >>> uri.attrs[UnUri.K_PROT]
@@ -49,10 +50,15 @@ class UnUri:
         >>> uri.attrs[UnUri.K_TOOL]
         'udc'
         >>> uri.attrs[UnUri.K_URI]
-        'udc+http://example.com?key=value#foo=bar'
+        'udc+http://example.com?key=value#foo=bar&fubar=baz'
+        >>> uri.attrs.get(UnUri.K_ID)
+        'bar'
+
         """
         self.uri = urlparse(uri_string)
         self.attrs = self.parse_query(self.uri.fragment)
+        frags = self.attrs.values()
+        self.attrs[UnUri.K_ID] = next(iter(frags), None)
         self.parse_scheme(self.uri.scheme)
         self.attrs[UnUri.K_HOST] = self.uri.hostname or "localhost"
         self.attrs[UnUri.K_UPTH] = self.uri.path.strip("/").split("/")
