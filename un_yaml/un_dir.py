@@ -21,10 +21,10 @@ class UnDir(UnAttr):
         >>> ud.dir_path.is_dir()
         True
         >>> u2 = UnDir({UnAttr.K_ID: "foo"})
-        >>> str(u2.dir_path)
-        'foo'
+        >>> str(u2.dir_path).endswith("foo")
+        True
         >>> u2.dir_path.exists()
-        False
+        True
         >>> d2 = u2.dir()
         >>> d2.is_dir()
         True
@@ -34,7 +34,7 @@ class UnDir(UnAttr):
         """
         super().__init__(attrs)
         default_dir: str = self.attrs.get(UnAttr.K_ID, False)
-        self.dir_path = Path(default_dir) if default_dir else self.make_temp_dir()
+        self.dir_path = self.check_dir(default_dir) if default_dir else self.make_temp_dir()
 
     def make_temp_dir(self) -> Path:
         self.temp_dir: TemporaryDirectory = TemporaryDirectory(
