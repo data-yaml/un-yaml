@@ -47,7 +47,8 @@ class UnUri(UnAttr):
 
         """
         self.uri = urlparse(uri_string)
-        self.attrs = self.parse_query(self.uri.fragment)
+        attrs = self.parse_query(self.uri.fragment)
+        super().__init__(attrs)
         frags = self.attrs.values()
         self.parse_scheme(self.uri.scheme)
         self.attrs[UnUri.K_ID] = next(iter(frags), self.attrs[UnUri.K_TOOL])
