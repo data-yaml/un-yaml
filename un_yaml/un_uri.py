@@ -4,18 +4,10 @@ from json import loads
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
+from .un_attr import UnAttr
 
-class UnUri:
-    ARG_URI = "uri"
-    ARG_RESOURCE = "resource"
-    SEP = "+"
-    K_HOST = "_hostname"
-    K_PROT = "_protocol"
-    K_UPTH = "_uri_paths"
-    K_QRY = "_query"
-    K_TOOL = "_tool"
-    K_URI = "_uri"
 
+class UnUri(UnAttr):
     @staticmethod
     def ExtractJson(result):
         if not isinstance(result, str) or result[0] != "{":
@@ -32,9 +24,34 @@ class UnUri:
         return query
 
     def __init__(self, uri_string: str):
+        """
+        Parse a UDC "app+protocol://" URI into components
+        - parse fragment into `attrs`
+        - use special attr keys for other components
+
+        >>> uri = UnUri("udc+http://example.com?key=value#foo=bar&fubar=baz")
+        >>> uri.attrs[UnUri.K_HOST]
+        'example.com'
+        >>> uri.attrs[UnUri.K_PROT]
+        'http'
+        >>> uri.attrs[UnUri.K_QRY]
+        {'key': 'value'}
+        >>> uri.attrs['foo']
+        'bar'
+        >>> uri.attrs[UnUri.K_TOOL]
+        'udc'
+        >>> uri.attrs[UnUri.K_URI]
+        'udc+http://example.com?key=value#foo=bar&fubar=baz'
+        >>> uri.attrs.get(UnUri.K_ID)
+        'bar'
+
+        """
         self.uri = urlparse(uri_string)
-        self.attrs = self.parse_query(self.uri.fragment)
+        attrs = self.parse_query(self.uri.fragment)
+        super().__init__(attrs)
+        frags = attrs.values()
         self.parse_scheme(self.uri.scheme)
+        self.attrs[UnUri.K_ID] = next(iter(frags), self.attrs[UnUri.K_TOOL])
         self.attrs[UnUri.K_HOST] = self.uri.hostname or "localhost"
         self.attrs[UnUri.K_UPTH] = self.uri.path.strip("/").split("/")
         self.attrs[UnUri.K_QRY] = self.parse_query(self.uri.query)
