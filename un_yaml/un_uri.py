@@ -49,7 +49,7 @@ class UnUri(UnAttr):
         self.uri = urlparse(uri_string)
         attrs = self.parse_query(self.uri.fragment)
         super().__init__(attrs)
-        frags = self.attrs.values()
+        frags = attrs.values()
         self.parse_scheme(self.uri.scheme)
         self.attrs[UnUri.K_ID] = next(iter(frags), self.attrs[UnUri.K_TOOL])
         self.attrs[UnUri.K_HOST] = self.uri.hostname or "localhost"
